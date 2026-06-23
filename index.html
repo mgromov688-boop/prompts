@@ -93,6 +93,19 @@
   .acc{max-width:880px;margin:44px auto 0;display:flex;flex-direction:column;gap:16px}
   .item{background:var(--glass);border:var(--cardbd);border-radius:20px;overflow:hidden;box-shadow:0 26px 70px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.06)}
   .item.open{border-color:rgba(255,170,80,.32);box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 50px rgba(255,150,50,.12),inset 0 1px 0 rgba(255,255,255,.08)}
+  /* soft gate */
+  .gatewrap{position:relative}
+  body.locked .acc{filter:blur(9px) saturate(.8);pointer-events:none;user-select:none;opacity:.8}
+  .gate{position:absolute;inset:-12px 0;display:none;align-items:center;justify-content:center;padding:18px;z-index:30}
+  body.locked .gate{display:flex}
+  .gate .lock{max-width:540px;width:100%;text-align:center;background:var(--glass);border:var(--cardbd);border-radius:24px;padding:40px 34px;
+    box-shadow:0 40px 110px rgba(0,0,0,.72),0 0 70px rgba(255,150,50,.13),inset 0 1px 0 rgba(255,255,255,.07)}
+  .gate .ic{width:64px;height:64px;margin:0 auto 18px;border-radius:18px;display:grid;place-items:center;font-size:30px;
+    background:linear-gradient(135deg,#FFD27A,#FF9A2E);box-shadow:0 10px 30px rgba(255,154,46,.4),inset 0 1px 0 rgba(255,255,255,.4)}
+  .gate h3{font-size:26px;font-weight:800;color:var(--ivory);letter-spacing:-.5px}
+  .gate p{margin-top:12px;font-size:16px;line-height:1.55;color:#b6ad9d}
+  .gate .acts{margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .gate .micro{margin-top:16px;font-size:13px;color:#7d7468}
   .head{display:flex;align-items:center;gap:18px;padding:24px 26px;cursor:pointer;user-select:none}
   .num{flex:none;width:46px;height:46px;border-radius:12px;background:var(--grad);color:var(--ink);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;box-shadow:var(--pill-sh)}
   .head .t{flex:1}
@@ -128,7 +141,7 @@
   }
 </style>
 </head>
-<body>
+<body class="locked">
 <div class="grain"></div>
 
 <header class="nav"><div class="wrap">
@@ -172,6 +185,19 @@
   <h2>Промты, по которым <span class="grad">я веду чаты</span></h2>
   <p class="lead">Нажми на промт, чтобы раскрыть его, понять зачем/когда он нужен — и скопировать одной кнопкой.</p>
 
+  <div class="gatewrap" id="gatewrap">
+  <div class="gate" id="gate">
+    <div class="lock">
+      <div class="ic">🔒</div>
+      <h3>Промты — подарок подписчикам</h3>
+      <p>Подпишись на канал <b style="color:var(--gold)">@ClaudeCodich</b> — там я по-человечески разбираю нейросети, без инфошума. Промты откроются сразу.</p>
+      <div class="acts">
+        <a class="btn btn-amber" href="https://t.me/ClaudeCodich" target="_blank" rel="noopener">Подписаться на канал</a>
+        <button class="btn btn-ghost unlockbtn" type="button">Я уже подписан — открыть</button>
+      </div>
+      <div class="micro">Это бесплатно и навсегда 🧡</div>
+    </div>
+  </div>
   <div class="acc">
 
     <div class="item">
@@ -238,6 +264,7 @@
     </div>
 
   </div>
+  </div><!-- /gatewrap -->
 </div></section>
 
 <!-- FINAL CTA -->
@@ -256,6 +283,9 @@
 
 <script>
   (function(){var b=document.getElementById('beams');if(b){for(var i=0;i<30;i++){var d=document.createElement('div');d.className='beam';var h=34+Math.random()*26;var dur=3.6+Math.random()*3.4;d.style.left=(Math.random()*100)+'%';d.style.height=h+'%';d.style.width=(Math.random()<0.18?2:1)+'px';d.style.opacity=(0.5+Math.random()*0.5).toFixed(2);d.style.animationDuration=dur+'s';d.style.animationDelay=(-Math.random()*dur)+'s';b.appendChild(d);}}})();
+  (function(){var KEY='kodych_open_v1';function unlock(){document.body.classList.remove('locked');try{localStorage.setItem(KEY,'1')}catch(e){}}
+    try{if(localStorage.getItem(KEY)==='1')document.body.classList.remove('locked');}catch(e){}
+    document.querySelectorAll('.unlockbtn').forEach(function(b){b.addEventListener('click',function(){unlock();var f=document.querySelector('.item');});});})();
   document.querySelectorAll('.item .head').forEach(function(h){
     h.addEventListener('click',function(){
       var it=h.parentElement, body=it.querySelector('.body');
