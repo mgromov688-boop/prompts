@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI-видео для бренда — пошаговый гайд · Claude Кодыч</title>
+<meta name="description" content="Полный пошаговый гайд: как собрать премиальное AI-видео для бренда. Реальный кейс, инструменты, промты и где не сжечь кредиты.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%23FF9A2E'/%3E%3Ctext x='50' y='73' font-family='Arial' font-size='62' font-weight='bold' text-anchor='middle' fill='%23140d06'%3EK%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --bg:#070606; --bg2:#0b0a09; --card:#100f0e; --amber:#FF9A2E; --gold:#FFD27A;
+    --ivory:#F4ECD8; --muted:#9a9182; --sub:#bcb3a2; --line:rgba(255,255,255,.09);
+    --mono:"Consolas","SF Mono",ui-monospace,monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ivory);font-family:Manrope,"Segoe UI",Arial,sans-serif;
+    line-height:1.5;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 26px}
+  .amber{color:var(--amber)}
+  .grad{background:linear-gradient(135deg,#FFE3B0,#FFB14A 45%,#FF8A1E 75%,#E8761A);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:14px;font-weight:800;letter-spacing:3px;color:var(--gold);
+    padding:9px 18px;border-radius:999px;background:rgba(20,15,10,.55);border:1.5px solid rgba(255,170,80,.45);box-shadow:inset 0 1px 0 rgba(255,255,255,.18)}
+  .eyebrow .dot{width:9px;height:9px;border-radius:50%;background:linear-gradient(135deg,#FFD27A,#FF9A2E);box-shadow:0 0 10px rgba(255,154,46,.9)}
+
+  /* nav */
+  nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);background:rgba(7,6,6,.72);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:66px}
+  .logo{display:flex;align-items:center;gap:11px;font-weight:800;font-size:18px}
+  .logo .mk{width:38px;height:38px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:#000;border:1.5px solid rgba(255,170,80,.5);box-shadow:0 0 0 3px rgba(255,154,46,.12),0 6px 16px rgba(0,0,0,.5)}
+  .logo .mk img{width:100%;height:100%;object-fit:cover;display:block}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-weight:800;border-radius:999px;cursor:pointer;transition:.2s;font-size:15px}
+  .btn-amber{background:linear-gradient(180deg,#FFD27A,#FF9A2E);color:#1a1206;padding:12px 24px;box-shadow:0 10px 30px rgba(255,154,46,.35),inset 0 1px 0 rgba(255,255,255,.4)}
+  .btn-amber:hover{transform:translateY(-2px)}
+  .btn-ghost{background:rgba(20,15,10,.5);border:1.5px solid var(--line);color:var(--gold);padding:11px 22px;backdrop-filter:blur(8px)}
+
+  /* hero */
+  .hero{position:relative;min-height:660px;display:flex;align-items:center;overflow:hidden;border-bottom:1px solid var(--line)}
+  .hero .bg{position:absolute;inset:0;background:#000}
+  .hero .bg img{width:100%;height:100%;object-fit:cover;object-position:right center;opacity:.92}
+  .hero .scrim{position:absolute;inset:0;background:
+    linear-gradient(90deg, #070606 18%, rgba(7,6,6,.72) 46%, rgba(7,6,6,.1) 78%),
+    linear-gradient(0deg, #070606 2%, rgba(7,6,6,0) 36%)}
+  .hero .wrap{position:relative;z-index:2;padding-top:70px;padding-bottom:70px}
+  .notes{display:flex;flex-direction:column;gap:10px;margin-bottom:22px;max-width:620px}
+  .note{display:flex;gap:10px;align-items:flex-start;font-size:15px;color:var(--sub);background:rgba(16,15,14,.6);border:1px solid var(--line);border-radius:12px;padding:11px 14px}
+  .note b{color:var(--ivory)}
+  .note i[data-lucide]{width:18px;height:18px;color:var(--amber);flex:none;margin-top:2px}
+  h1{font-size:64px;font-weight:800;line-height:1.04;letter-spacing:-2px;margin:14px 0 18px;max-width:760px}
+  .hero p.lead{font-size:21px;color:var(--sub);max-width:600px;margin-bottom:26px}
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap}
+
+  /* stack strip */
+  .stack{padding:28px 0;border-bottom:1px solid var(--line);background:var(--bg2)}
+  .stack .wrap{display:flex;align-items:center;gap:14px 30px;flex-wrap:wrap;justify-content:center;color:var(--muted)}
+  .stack .lbl{font-weight:700;font-size:14px;letter-spacing:1px}
+  .stack .chip{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:17px;color:var(--ivory)}
+  .stack .chip i{width:18px;height:18px;color:var(--amber)}
+
+  section.blk{padding:80px 0;border-bottom:1px solid var(--line)}
+  .center{text-align:center}
+  h2{font-size:42px;font-weight:800;letter-spacing:-1px;line-height:1.08}
+  .h2sub{color:var(--sub);font-size:18px;margin-top:14px;max-width:680px}
+  .center .h2sub{margin-left:auto;margin-right:auto}
+
+  /* value pills */
+  .vpills{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:34px}
+  .vpill{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:17px;padding:14px 24px;border-radius:14px;background:var(--card);border:1px solid var(--line);box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+  .vpill i{width:20px;height:20px;color:var(--amber)}
+
+  /* principle flow */
+  .flow{margin-top:30px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center}
+  .fchip{padding:12px 18px;border-radius:12px;background:rgba(255,154,46,.08);border:1px solid rgba(255,170,80,.28);font-weight:700;font-size:16px}
+  .fchip.hot{background:linear-gradient(180deg,#FFD27A,#FF9A2E);color:#1a1206;border:none}
+  .farr{color:var(--amber);opacity:.7}
+  .principle-note{margin-top:26px;text-align:center;color:var(--sub);font-size:18px;max-width:760px;margin-left:auto;margin-right:auto}
+  .principle-note b{color:var(--ivory)}
+
+  /* accordion (stages, prompts, faq) */
+  .acc{margin-top:34px;display:flex;flex-direction:column;gap:14px}
+  .item{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+  .item.open{border-color:rgba(255,170,80,.34);box-shadow:0 24px 60px rgba(0,0,0,.5),0 0 40px rgba(255,150,50,.10)}
+  .head{display:flex;align-items:center;gap:16px;padding:22px 24px;cursor:pointer;user-select:none}
+  .head .ic{width:46px;height:46px;border-radius:12px;flex:none;display:grid;place-items:center;background:linear-gradient(135deg,rgba(255,210,122,.18),rgba(255,138,30,.10));border:1px solid rgba(255,170,80,.3)}
+  .head .ic i{width:24px;height:24px;color:var(--amber)}
+  .head .t{flex:1}
+  .head .ttl{font-weight:800;font-size:22px;letter-spacing:-.3px}
+  .head .when{color:var(--muted);font-size:15px;margin-top:2px}
+  .head .chev{width:22px;height:22px;color:var(--muted);transition:.3s;flex:none}
+  .item.open .chev{transform:rotate(180deg);color:var(--amber)}
+  .body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+  .inner{padding:0 24px 26px 86px}
+  .inner p{color:var(--sub);margin:6px 0}
+  .inner .ok{color:#cde3b8} .inner .no{color:#f0b6a0}
+  .inner ul{list-style:none;margin:8px 0}
+  .inner li{position:relative;padding-left:22px;color:var(--sub);margin:7px 0}
+  .inner li::before{content:"";position:absolute;left:2px;top:9px;width:7px;height:7px;border-radius:50%;background:var(--amber)}
+  .inner b{color:var(--ivory)}
+  .tag{display:inline-block;font-size:13px;font-weight:800;letter-spacing:1px;color:#1a1206;background:linear-gradient(135deg,#FFD27A,#FF9A2E);padding:3px 10px;border-radius:999px;margin-right:6px}
+  pre{background:#0a0908;border:1px solid var(--line);border-radius:12px;padding:16px 18px;font-family:var(--mono);font-size:14px;color:#cfc7b6;white-space:pre-wrap;line-height:1.55;margin:10px 0;overflow-x:auto}
+  pre .g{color:var(--amber)}
+  code{font-family:var(--mono);background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-size:.92em;color:var(--gold)}
+
+  /* tools grid */
+  .grid{margin-top:34px;display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .tcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+  .tcard .ic{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(255,210,122,.18),rgba(255,138,30,.10));border:1px solid rgba(255,170,80,.3);margin-bottom:14px}
+  .tcard .ic i{width:22px;height:22px;color:var(--amber)}
+  .tcard h3{font-size:20px;font-weight:800}
+  .tcard h3 .m{font-family:var(--mono);font-size:14px;color:var(--gold);font-weight:600}
+  .tcard p{color:var(--sub);font-size:15px;margin-top:7px}
+  .tcard .cost{display:inline-block;margin-top:10px;font-size:13px;font-weight:800;color:var(--gold);background:rgba(255,154,46,.1);border:1px solid rgba(255,170,80,.28);padding:3px 11px;border-radius:999px}
+  .price{margin-top:26px;text-align:center;font-size:18px;color:var(--sub)}
+  .price b{color:var(--ivory)}
+
+  /* checklist */
+  .check{margin-top:34px;background:linear-gradient(180deg,rgba(255,154,46,.07),rgba(16,15,14,.6));border:1px solid rgba(255,170,80,.28);border-radius:20px;padding:30px}
+  .check ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:12px 26px}
+  .check li{display:flex;gap:11px;align-items:flex-start;font-weight:600;color:var(--ivory)}
+  .check li i{width:20px;height:20px;color:var(--amber);flex:none;margin-top:2px}
+
+  /* final + footer */
+  .final{padding:90px 0;text-align:center;border-bottom:1px solid var(--line);background:radial-gradient(60% 80% at 50% 0%,rgba(255,140,45,.12),rgba(7,6,6,0) 70%)}
+  .thanks{font-size:20px;color:var(--sub);max-width:620px;margin:18px auto 0}
+  .thanks b{color:var(--ivory)}
+  .handle{display:inline-flex;align-items:center;gap:12px;margin-top:30px;padding:18px 38px;border-radius:999px;background:linear-gradient(180deg,#FFD27A,#FF9A2E);color:#1a1206;font-weight:800;font-size:30px;box-shadow:0 14px 44px rgba(255,154,46,.45),inset 0 1px 0 rgba(255,255,255,.4)}
+  footer{padding:30px 0;text-align:center;color:var(--muted);font-size:14px}
+
+  /* --- polish v2 --- */
+  .inner{padding:4px 28px 28px 86px}
+  .inner p{margin:12px 0;line-height:1.62;font-size:16px}
+  .inner ul{margin:12px 0 14px}
+  .inner li{margin:9px 0;line-height:1.55}
+  .ok i[data-lucide],.no i[data-lucide]{width:19px;height:19px;flex:none;margin-right:9px;vertical-align:-4px}
+  .ok i[data-lucide]{color:#8fce6e}.no i[data-lucide]{color:#ef926e}
+  .inner li.ok,.inner li.no{padding-left:0;display:flex;align-items:flex-start}
+  .inner li.ok::before,.inner li.no::before{display:none}
+  .inner b i[data-lucide]{width:17px;height:17px;vertical-align:-3px;margin-right:6px;color:var(--amber)}
+  .tabs{display:flex;gap:3px;background:rgba(20,18,16,.55);border:1px solid var(--line);border-radius:999px;padding:5px;backdrop-filter:blur(10px)}
+  .tabs a{padding:8px 16px;border-radius:999px;font-weight:600;font-size:14px;color:var(--muted);transition:.2s}
+  .tabs a:hover{color:var(--ivory);background:rgba(255,255,255,.06)}
+  .stack .chip img{width:24px;height:24px;object-fit:contain}
+  .tcard .ic img{width:24px;height:24px;object-fit:contain}
+  .tcard,.vpill{transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}
+  .tcard:hover{transform:translateY(-4px);border-color:rgba(255,170,80,.35);box-shadow:0 24px 50px rgba(0,0,0,.5),0 0 36px rgba(255,150,50,.1)}
+  .vpill:hover{transform:translateY(-3px);border-color:rgba(255,170,80,.35)}
+  .item{transition:border-color .25s ease}
+  .head .ic,.tcard .ic{transition:transform .25s ease}
+  .item:hover .head .ic,.tcard:hover .ic{transform:scale(1.07) rotate(-2deg)}
+  .stack .chip{transition:transform .2s}.stack .chip:hover{transform:translateY(-2px)}
+  @media(max-width:980px){.tabs{display:none}}
+  /* --- readability v3: чистые блоки в стиле Salesmax --- */
+  .inner{max-width:940px}
+  .inner p{font-size:16.5px;line-height:1.7;margin:14px 0;max-width:770px;overflow-wrap:break-word}
+  .inner ul{max-width:770px}
+  .inner li{line-height:1.62;margin:10px 0}
+  .inner p.ok,.inner p.no{display:flex;align-items:flex-start;padding:13px 16px;border-radius:12px;margin:12px 0;background:rgba(255,255,255,.025);border:1px solid var(--line);color:var(--ivory)}
+  .inner p.ok{border-color:rgba(143,206,110,.28)}
+  .inner p.no{border-color:rgba(239,146,110,.28)}
+  .inner p.ok i[data-lucide],.inner p.no i[data-lucide]{margin-top:1px}
+  /* Salesmax-style: иконки крупные, «парящие», без коробки, со свечением */
+  .head .ic,.tcard .ic{background:transparent!important;border:none!important;width:42px;height:42px}
+  .head .ic i,.tcard .ic i{width:32px;height:32px;color:var(--amber);filter:drop-shadow(0 0 12px rgba(255,154,46,.45))}
+  .tcard .ic{margin-bottom:16px}
+  .item:hover .head .ic i,.tcard:hover .ic i{filter:drop-shadow(0 0 18px rgba(255,154,46,.7))}
+
+  /* --- premium SVG icons v4 (Salesmax-style: амбер-градиент + аура + свечение) --- */
+  .head .ic,.tcard .ic{width:48px!important;height:48px!important;overflow:visible}
+  .pic{width:48px;height:48px;display:block;overflow:visible;transition:filter .25s ease;
+    filter:drop-shadow(0 4px 9px rgba(255,110,18,.32))}
+  .item:hover .head .ic .pic,.tcard:hover .ic .pic{filter:drop-shadow(0 7px 17px rgba(255,140,30,.62))}
+
+  /* --- stage inner visual blocks --- */
+  .meta-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+  .mbadge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;letter-spacing:.5px;padding:5px 12px;border-radius:999px;border:1px solid}
+  .mbadge.time{background:rgba(255,154,46,.1);border-color:rgba(255,170,80,.35);color:var(--gold)}
+  .mbadge.cred{background:rgba(143,206,110,.08);border-color:rgba(143,206,110,.3);color:#a8dfa8}
+  .mbadge.out{background:rgba(180,160,255,.08);border-color:rgba(180,160,255,.3);color:#cbbfff}
+  .mbadge.free{background:rgba(80,200,160,.08);border-color:rgba(80,200,160,.3);color:#80d4b8}
+  .mbadge::before{content:"";width:13px;height:13px;flex:none;background:currentColor;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;-webkit-mask-size:contain;mask-size:contain}
+  .mbadge.time::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3.5 2'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3.5 2'/%3E%3C/svg%3E")}
+  .mbadge.cred::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linejoin='round'%3E%3Crect x='3' y='6' width='18' height='13' rx='2.5'/%3E%3Cpath d='M3 10.5h18'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linejoin='round'%3E%3Crect x='3' y='6' width='18' height='13' rx='2.5'/%3E%3Cpath d='M3 10.5h18'/%3E%3C/svg%3E")}
+  .mbadge.out::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3C/svg%3E")}
+  .mbadge.free::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M6 6l12 12'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M6 6l12 12'/%3E%3C/svg%3E")}
+  .inner .pro-tip{margin:18px 0 10px;padding:14px 18px;border-radius:14px;background:linear-gradient(135deg,rgba(255,210,100,.08),rgba(255,120,20,.06));border:1px solid rgba(255,170,80,.32);display:flex;gap:12px;align-items:flex-start}
+  .inner .pro-tip .pt-icon{flex:none;margin-top:1px;line-height:0}
+  .inner .pro-tip .pt-icon svg{width:21px;height:21px;display:block}
+  .inner .pro-tip p{margin:0;color:var(--ivory);font-size:15px;line-height:1.6}
+  .inner .pro-tip b{color:var(--gold)}
+  .inner .done-bar{margin-top:18px;padding:12px 18px;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.1);display:flex;gap:10px;align-items:center;font-size:15px;color:var(--sub)}
+  .inner .done-bar b{color:var(--ivory)}
+  .inner .done-bar .dk{flex:none;line-height:0}
+  .inner .done-bar .dk svg{width:20px;height:20px;display:block}
+  .inner .tool-map{margin:14px 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+  .inner .trow{padding:12px 15px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid var(--line)}
+  .inner .trow .tname{font-weight:800;font-size:14px;color:var(--ivory);margin-bottom:4px}
+  .inner .trow .tdesc{font-size:13px;color:var(--muted);line-height:1.5}
+  .inner .trow .tcost{font-size:12px;font-weight:700;margin-top:6px;color:var(--gold)}
+  .inner .step-list{margin:12px 0;counter-reset:stp}
+  .inner .step-list li{counter-increment:stp;padding-left:32px;position:relative;margin:10px 0;color:var(--sub)}
+  .inner .step-list li::before{content:counter(stp);position:absolute;left:0;top:0;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#FFD27A,#FF9A2E);color:#1a1206;font-size:12px;font-weight:800;display:grid;place-items:center}
+  .inner .warn-box{margin:14px 0;padding:13px 16px;border-radius:12px;background:rgba(239,146,110,.07);border:1px solid rgba(239,146,110,.28);display:flex;gap:10px;align-items:flex-start;font-size:15px;color:var(--ivory)}
+  .inner .warn-box .wi{flex:none;line-height:0}
+  .inner .warn-box .wi svg{width:20px;height:20px;display:block}
+
+  @media(max-width:760px){
+    h1{font-size:40px} h2{font-size:30px}
+    .hero .bg img{object-position:70% center}
+    .hero .scrim{background:linear-gradient(0deg,#070606 30%,rgba(7,6,6,.55) 100%)}
+    .grid,.check ul{grid-template-columns:1fr}
+    .inner{padding:0 20px 22px 20px}
+    .nav-cta{display:none}
+    .inner .tool-map{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs>
+  <linearGradient id="ag" x1="6" y1="6" x2="42" y2="42" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#FFE0A8"/><stop offset=".5" stop-color="#FF9A2E"/><stop offset="1" stop-color="#FF6A12"/>
+  </linearGradient>
+  <radialGradient id="agf" cx="50%" cy="42%" r="60%">
+    <stop offset="0" stop-color="#FF9A2E" stop-opacity=".28"/><stop offset="1" stop-color="#FF9A2E" stop-opacity="0"/>
+  </radialGradient>
+</defs></svg>
+
+<nav><div class="wrap">
+  <div class="logo"><span class="mk"><img src="z/guide/avatar.png" alt="Claude — Кодыч"></span>Claude — Кодыч</div>
+  <div class="tabs">
+    <a href="#stages">Этапы</a><a href="#tools">Инструменты</a><a href="#prompts">Промты</a><a href="#cc">Claude Code</a><a href="#faq">FAQ</a>
+  </div>
+  <a class="btn btn-amber nav-cta" href="https://t.me/ClaudeCodich" target="_blank">В Telegram</a>
+</div></nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="bg"><img src="z/guide/hero.png" alt=""></div>
+  <div class="scrim"></div>
+  <div class="wrap">
+    <div class="notes">
+      <div class="note"><i data-lucide="pin"></i><div>Это разбор <b>реального оплаченного кейса</b> — то самое видео из поста. Вся архитектура методики, по шагам.</div></div>
+      <div class="note"><i data-lucide="sparkles"></i><div><b>Лайфхак:</b> скопируй этот гайд и вставь в свою сессию <b>Claude Code</b> — он вытащит всю методику и будет работать с тобой по ней.</div></div>
+    </div>
+    <div class="eyebrow"><span class="dot"></span>ГАЙД · РЕАЛЬНЫЙ КЕЙС</div>
+    <h1>Как собрать премиальное <span class="grad">AI-видео для бренда</span> — пошагово</h1>
+    <p class="lead">От брифа до экспорта. Готовые решения, точные настройки и места, где горят кредиты — и как их не жечь. Простым языком.</p>
+    <div class="cta-row">
+      <a class="btn btn-amber" href="#stages">Открыть гайд <i data-lucide="arrow-down" style="width:18px"></i></a>
+      <a class="btn btn-ghost" href="https://t.me/ClaudeCodich" target="_blank">Канал в Telegram</a>
+    </div>
+  </div>
+</header>
+
+<!-- STACK -->
+<div class="stack"><div class="wrap">
+  <span class="lbl">СОБРАНО НА СТЕКЕ:</span>
+  <span class="chip"><img src="z/guide/logos/claude.svg" alt="">Claude Code</span>
+  <span class="chip"><img src="z/guide/logos/higgsfield.png" alt="">Higgsfield</span>
+  <span class="chip"><img src="z/guide/logos/ffmpeg.svg" alt="">ffmpeg</span>
+  <span class="chip"><img src="z/guide/logos/opencv.svg" alt="">OpenCV</span>
+  <span class="chip"><img src="z/guide/logos/capcut_fav.png" alt="">CapCut</span>
+</div></div>
+
+<!-- VALUE -->
+<section class="blk reveal"><div class="wrap center">
+  <h2>Только то, что реально работает</h2>
+  <p class="h2sub">Каждый шаг построен одинаково: <b>что делать → как → чего НЕ делать</b> (чтобы не жечь кредиты). Конкретные модели, настройки, цены, промты.</p>
+  <div class="vpills">
+    <span class="vpill"><i data-lucide="timer"></i>Экономит часы</span>
+    <span class="vpill"><i data-lucide="wallet"></i>Экономит кредиты</span>
+    <span class="vpill"><i data-lucide="target"></i>Повторишь у себя</span>
+  </div>
+</div></section>
+
+<!-- PRINCIPLE -->
+<section class="blk reveal"><div class="wrap center">
+  <div class="eyebrow"><span class="dot"></span>ГЛАВНЫЙ ПРИНЦИП</div>
+  <h2 style="margin-top:18px">Один принцип, который<br>экономит больше всего</h2>
+  <div class="flow">
+    <span class="fchip">Лок лука</span><i class="farr" data-lucide="chevron-right"></i>
+    <span class="fchip hot">дешёвый КАДР</span><i class="farr" data-lucide="chevron-right"></i>
+    <span class="fchip">утверждение</span><i class="farr" data-lucide="chevron-right"></i>
+    <span class="fchip hot">оживление (дорого)</span><i class="farr" data-lucide="chevron-right"></i>
+    <span class="fchip">грейд/4K (бесплатно)</span><i class="farr" data-lucide="chevron-right"></i>
+    <span class="fchip">сборка+звук</span>
+  </div>
+  <p class="principle-note">Дорогое — это оживление картинки в видео. Картинка стоит копейки, видео — много. Поэтому <b>оживляем ТОЛЬКО утверждённый кадр.</b> Оживил черновой — переделка съедает кредиты дважды.</p>
+</div></section>
+
+<!-- STAGES -->
+<section class="blk reveal" id="stages"><div class="wrap">
+  <div class="center"><h2>8 этапов производства</h2><p class="h2sub">Полный маршрут от идеи до готового ролика. Жми на этап — раскроется.</p></div>
+  <div class="acc" id="accStages">
+
+    <!-- STAGE 1 -->
+    <div class="item"><div class="head"><div class="ic">
+      <svg class="pic" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" fill="url(#agf)"/>
+        <rect x="13" y="12" width="22" height="27" rx="3.5" fill="rgba(255,210,120,.12)" stroke="url(#ag)" stroke-width="2"/>
+        <rect x="18" y="8" width="12" height="7" rx="2.5" fill="url(#ag)"/>
+        <line x1="18" y1="8" x2="30" y2="8" stroke="url(#ag)" stroke-width="0"/>
+        <rect x="17" y="20" width="14" height="2.5" rx="1.2" fill="url(#ag)" opacity=".9"/>
+        <rect x="17" y="25.5" width="10" height="2.5" rx="1.2" fill="url(#ag)" opacity=".7"/>
+        <rect x="17" y="31" width="12" height="2.5" rx="1.2" fill="url(#ag)" opacity=".5"/>
+        <circle cx="24" cy="11.5" r="1.5" fill="#1a1206"/>
+      </svg>
+    </div><div class="t"><div class="ttl">1 · Бриф — что собрать ДО старта</div><div class="when">фото-якоря и вводные, без которых посыплется сходство</div></div><i class="chev" data-lucide="chevron-down"></i></div>
+      <div class="body"><div class="inner">
+        <div class="meta-row">
+          <span class="mbadge time">30–60 мин</span>
+          <span class="mbadge cred">0 кредитов</span>
+          <span class="mbadge out">Готовый пакет для старта</span>
+        </div>
+        <p><b>Фото человека для аватара:</b></p>
+        <ul>
+          <li>10–15 фото — ровный нейтральный свет, без сильного макияжа и фильтров</li>
+          <li>Ракурсы: фас, оба строгих профиля (90°), ¾ слева и справа — все 5 обязательны</li>
+          <li>Планы: крупно лицо + по пояс; 2–3 эмоции (нейтраль, лёгкая улыбка, серьёзный взгляд)</li>
+          <li>Одинаковый свет на всех фото = стабильнее сходство при обучении аватара</li>
+        </ul>
+        <p><b>Вводные проекта:</b> формат (16:9 / 9:16), хронометраж, стиль (палитра/свет) + 2–3 референса, сквозные правила — что нельзя менять между сценами (цвет акцента, элемент одежды, цвет фона).</p>
+        <p><b>Именуй файлы по ракурсу</b> — <code>face_front.jpg</code>, <code>face_left90.jpg</code> — штаб не путается в папке.</p>
+        <div class="pro-tip"><span class="pt-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M9.5 18.5h5M10.5 21.5h3" stroke="url(#ag)" stroke-width="2" stroke-linecap="round"/><path d="M12 2.5a6.2 6.2 0 0 0-3.9 11c.8.7 1.3 1.4 1.4 2.5h5c.1-1.1.6-1.8 1.4-2.5A6.2 6.2 0 0 0 12 2.5z" fill="rgba(255,200,120,.16)" stroke="url(#ag)" stroke-width="2" stroke-linejoin="round"/></svg></span><p><b>Pro:</b> сними 2–3 фото только для сложного ракурса (строгий профиль 90°) на нейтральном фоне — именно он чаще всего теряет сходство при генерации.</p></div>
+        <div class="warn-box"><span class="wi"><svg viewBox="0 0 24 24" fill="none" stroke="#ef926e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5l8.6 15h-17.2z" fill="rgba(239,146,110,.13)"/><path d="M12 10v4.3M12 17.6v.1"/></svg></span><p>Не стартуй без полного набора ракурсов — модель <b>додумывает</b> лицо там, где фото не хватает. Особенно критичен профиль.</p></div>
+        <div class="done-bar"><span class="dk"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="rgba(143,206,110,.15)" stroke="#8fce6e" stroke-width="2"/><path d="M8 12.4l2.6 2.6L16.2 9.2" stroke="#8fce6e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p><b>Готово, когда:</b> есть папка с фото по ракурсам, список сцен и сквозные правила — штаб ничего не додумывает.</p></div>
+      </div></div></div>
+
+    <!-- STAGE 2 -->
+    <div class="item"><div class="head"><div class="ic">
+      <svg class="pic" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" fill="url(#agf)"/>
+        <rect x="11" y="22" width="26" height="16" rx="2.8" fill="rgba(255,210,120,.12)" stroke="url(#ag)" stroke-width="2"/>
+        <rect x="11" y="16" width="26" height="8" rx="2" fill="url(#ag)" opacity=".9"/>
+        <line x1="17" y1="16" x2="17" y2="24" stroke="#1a1206" stroke-width="2.2"/>
+        <line x1="23" y1="16" x2="23" y2="24" stroke="#1a1206" stroke-width="2.2"/>
+        <line x1="29" y1="16" x2="29" y2="24" stroke="#1a1206" stroke-width="2.2"/>
+        <line x1="20" y1="14" x2="14" y2="10" stroke="url(#ag)" stroke-width="2" stroke-linecap="round"/>
+        <line x1="28" y1="14" x2="22" y2="10" stroke="url(#ag)" stroke-width="2" stroke-linecap="round"/>
+        <rect x="15" y="28" width="8" height="2" rx="1" fill="url(#ag)" opacity=".6"/>
+        <rect x="15" y="32" width="12" height="2" rx="1" fill="url(#ag)" opacity=".4"/>
+      </svg>
+    </div><div class="t"><div class="ttl">2 · Сюжет и ТЗ — утверждаем ДО производства</div><div class="when">закрыть вопросы на бумаге, пока правки бесплатны</div></div><i class="chev" data-lucide="chevron-down"></i></div>
+      <div class="body"><div class="inner">
+        <div class="meta-row">
+          <span class="mbadge time">1–2 часа</span>
+          <span class="mbadge cred">0 кредитов</span>
+          <span class="mbadge out">Подписанное ТЗ = 0 кругов правок</span>
+        </div>
+        <p><b>Что входит в ТЗ заказчику:</b></p>
+        <ul>
+          <li>Концепт и стиль (1–2 предложения + 2–3 визуальных референса)</li>
+          <li>Раскадровка: <code>Сцена 3 — герой у окна, ¾ слева, лёгкий поворот головы, 4с</code></li>
+          <li>Лук: одежда, причёска, аксессуары, акцентный цвет — одинаковы во всех сценах</li>
+          <li>Что критично сохранить (идентичность) и что нельзя менять (фоновый цвет, элемент бренда)</li>
+          <li>Смета на генерацию: <b>число сцен × кредиты заранее</b> — без сюрпризов для клиента</li>
+        </ul>
+        <p><b>Утверди письменно</b> (скриншот чата / подпись) → правишь сцену на скетче бесплатно, не на сгенерированном видео.</p>
+        <div class="pro-tip"><span class="pt-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M9.5 18.5h5M10.5 21.5h3" stroke="url(#ag)" stroke-width="2" stroke-linecap="round"/><path d="M12 2.5a6.2 6.2 0 0 0-3.9 11c.8.7 1.3 1.4 1.4 2.5h5c.1-1.1.6-1.8 1.4-2.5A6.2 6.2 0 0 0 12 2.5z" fill="rgba(255,200,120,.16)" stroke="url(#ag)" stroke-width="2" stroke-linejoin="round"/></svg></span><p><b>Pro:</b> посчитай смету ДО старта — <b>10 сцен × 4с на kling-turbo ≈ 60 кр</b>, на seedance ≈ 200–360 кр. Заказчик одобряет бюджет на берегу.</p></div>
+        <div class="warn-box"><span class="wi"><svg viewBox="0 0 24 24" fill="none" stroke="#ef926e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5l8.6 15h-17.2z" fill="rgba(239,146,110,.13)"/><path d="M12 10v4.3M12 17.6v.1"/></svg></span><p>Не начинай рендер без подписанного ТЗ. Правка на скетче — минута, на готовом видео — повторная генерация и кредиты дважды.</p></div>
+        <div class="done-bar"><span class="dk"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="rgba(143,206,110,.15)" stroke="#8fce6e" stroke-width="2"/><path d="M8 12.4l2.6 2.6L16.2 9.2" stroke="#8fce6e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p><b>Готово, когда:</b> раскадровка подписана, смета согласована, лук зафиксирован.</p></div>
+      </div></div></div>
+
+    <!-- STAGE 3 -->
+    <div class="item"><div class="head"><div class="ic">
+      <svg class="pic" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" fill="url(#agf)"/>
+        <rect x="12" y="30" width="24" height="7" rx="2.5" fill="url(#ag)" opacity=".95"/>
+        <rect x="14" y="23" width="20" height="7" rx="2.5" fill="url(#ag)" opacity=".7"/>
+        <rect x="16" y="16" width="16" height="7" rx="2.5" fill="url(#ag)" opacity=".45"/>
+        <rect x="18" y="10" width="12" height="6" rx="2" fill="url(#ag)" opacity=".25"/>
+      </svg>
+    </div><div class="t"><div class="ttl">3 · Стек — маршрут инструментов</div><div class="when">что где делает и где горят деньги, а где бесплатно</div></div><i class="chev" data-lucide="chevron-down"></i></div>
+      <div class="body"><div class="inner">
+        <div class="meta-row">
+          <span class="mbadge time">разово ~1 час настройки</span>
+          <span class="mbadge free">обработка бесплатно</span>
+          <span class="mbadge out">Понимаешь, где тратить, где нет</span>
+        </div>
+        <p><b>Полный маршрут:</b> генерация в облаке → обработка локально → сборка:</p>
+        <div class="tool-map">
+          <div class="trow"><div class="tname">Higgsfield</div><div class="tdesc">Генерация изображений и видео. Обучение аватара. Подмена лица, правки.</div><div class="tcost"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10.5h18"/></svg>Платно — здесь горят кредиты</div></div>
+          <div class="trow"><div class="tname">Claude Code</div><div class="tdesc">Штаб: пишет промты, управляет Higgsfield (MCP), запускает скрипты обработки, ведёт QC.</div><div class="tcost"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" style="vertical-align:-2px;margin-right:5px"><circle cx="12" cy="12" r="9"/><path d="M6 6l12 12"/></svg>Не тратит кредиты Higgsfield</div></div>
+          <div class="trow"><div class="tname">ffmpeg</div><div class="tdesc">Стабилизация, грейд, 4K, склейка, скорость. Весь постпродакшн — локально.</div><div class="tcost"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" style="vertical-align:-2px;margin-right:5px"><circle cx="12" cy="12" r="9"/><path d="M6 6l12 12"/></svg>Полностью бесплатно</div></div>
+          <div class="trow"><div class="tname">OpenCV / PIL</div><div class="tdesc">Покадровая работа: QC-проверка клипов, маска цвета, замер дрожи, ретушь.</div><div class="tcost"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" style="vertical-align:-2px;margin-right:5px"><circle cx="12" cy="12" r="9"/><path d="M6 6l12 12"/></svg>Полностью бесплатно</div></div>
+          <div class="trow"><div class="tname">CapCut</div><div class="tdesc">Финальная сборка, звук, переходы, субтитры, экспорт.</div><div class="tcost"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" style="vertical-align:-2px;margin-right:5px"><circle cx="12" cy="12" r="9"/><path d="M6 6l12 12"/></svg>Бесплатный план достаточен</div></div>
+        </div>
+        <div class="pro-tip"><span class="pt-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M9.5 18.5h5M10.5 21.5h3" stroke="url(#ag)" stroke-width="2" stroke-linecap="round"/><path d="M12 2.5a6.2 6.2 0 0 0-3.9 11c.8.7 1.3 1.4 1.4 2.5h5c.1-1.1.6-1.8 1.4-2.5A6.2 6.2 0 0 0 12 2.5z" fill="rgba(255,200,120,.16)" stroke="url(#ag)" stroke-width="2" stroke-linejoin="round"/></svg></span><p><b>Правило стека:</b> облако — только для генерации (платно). Всё остальное — локально, бесплатно. Не гони постпродакшн через Higgsfield.</p></div>
+        <div class="done-bar"><span class="dk"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="rgba(143,206,110,.15)" stroke="#8fce6e" stroke-width="2"/><path d="M8 12.4l2.6 2.6L16.2 9.2" stroke="#8fce6e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p><b>Готово, когда:</b> понимаешь, где тратишь кредиты (только Higgsfield), а где работаешь бесплатно.</p></div>
+      </div></div></div>
+
+    <!-- STAGE 4 -->
+    <div class="item"><div class="head"><div class="ic">
+      <svg class="pic" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" fill="url(#agf)"/>
+        <rect x="15" y="15" width="18" height="18" rx="4" fill="rgba(255,210,120,.15)" stroke="url(#ag)" stroke-width="2"/>
+        <circle cx="24" cy="24" r="4.5" fill="url(#ag)"/>
+        <line x1="24" y1="11" x2="24" y2="15" stroke="url(#ag)" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="24" y1="33" x2="24" y2="37" stroke="url(#ag)" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="11" y1="24" x2="15" y2="24" stroke="url(#ag)" stroke-width="2.2" stroke-linecap="round"/>
+        <line x1="33" y1="24" x2="37" y2="24" stroke="url(#ag)" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="24" cy="11" r="2" fill="url(#ag)"/>
+        <circle cx="24" cy="37" r="2" fill="url(#ag)"/>
+        <circle cx="11" cy="24" r="2" fill="url(#ag)"/>
+        <circle cx="37" cy="24" r="2" fill="url(#ag)"/>
+        <circle cx="17" cy="17" r="1.4" fill="url(#ag)" opacity=".6"/>
+        <circle cx="31" cy="17" r="1.4" fill="url(#ag)" opacity=".6"/>
+        <circle cx="17" cy="31" r="1.4" fill="url(#ag)" opacity=".6"/>
+        <circle cx="31" cy="31" r="1.4" fill="url(#ag)" opacity=".6"/>
+      </svg>
+    </div><div class="t"><div class="ttl">4 · Claude Code как штаб</div><div class="when">один «мозг» держит весь проект — стиль, промты, QC</div></div><i class="chev" data-lucide="chevron-down"></i></div>
+      <div class="body"><div class="inner">
+        <div class="meta-row">
+          <span class="mbadge cred">0 кредитов Higgsfield</span>
+          <span class="mbadge out">Единый стиль во всех сценах</span>
+        </div>
+        <p><b>Что делает Claude Code в этом проекте:</b></p>
+        <ul class="step-list">
+          <li><b>Держит правила проекта</b> — лук, палитра, сквозные запреты — в одном файле. Все промты строятся по одним правилам → стиль не плывёт между сценами.</li>
+          <li><b>Пишет и чинит промты</b> под каждую сцену по шаблону (ракурс, якорь, негатив, цвет-правило) — не нужно делать вручную.</li>
+          <li><b>Управляет Higgsfield через MCP</b> — запускает генерации, получает результаты без ручных кликов в браузере.</li>
+          <li><b>Запускает постпродакшн пакетом</b> — один вызов грейда / стабилизации / 4K через ffmpeg или OpenCV на все клипы сразу.</li>
+          <li><b>Ведёт QC-чеклист</b> — автопроверка каждого клипа: нет фризов, сходство в норме, нет двойника в кадре.</li>
+        </ul>
+        <div class="pro-tip"><span class="pt-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M9.5 18.5h5M10.5 21.5h3" stroke="url(#ag)" stroke-width="2" stroke-linecap="round"/><path d="M12 2.5a6.2 6.2 0 0 0-3.9 11c.8.7 1.3 1.4 1.4 2.5h5c.1-1.1.6-1.8 1.4-2.5A6.2 6.2 0 0 0 12 2.5z" fill="rgba(255,200,120,.16)" stroke="url(#ag)" stroke-width="2" stroke-linejoin="round"/></svg></span><p><b>Pro:</b> вставь этот гайд в системный промт сессии — штаб сразу знает правила проекта, методику и стек. Работает как брифованный ассистент, не надо объяснять каждый раз.</p></div>
+        <div class="done-bar"><span class="dk"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="rgba(143,206,110,.15)" stroke="#8fce6e" stroke-width="2"/><path d="M8 12.4l2.6 2.6L16.2 9.2" stroke="#8fce6e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p><b>Готово, когда:</b> один «мозг» держит проект, между сценами ничего не плывёт, постпродакшн запускается одной командой.</p></div>
+      </div></div></div>
+
+    <!-- STAGE 5 -->
+    <div class="item"><div class="head"><div class="ic">
+      <svg class="pic" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" fill="url(#agf)"/>
+        <rect x="10" y="14" width="28" height="22" rx="3.5" fill="rgba(255,210,120,.12)" stroke="url(#ag)" stroke-width="2"/>
+        <rect x="10" y="14" width="28" height="6" rx="3.5" fill="url(#ag)" opacity=".3"/>
+        <circle cx="24" cy="26" r="6" fill="rgba(255,210,120,.18)" stroke="url(#ag)" stroke-width="2"/>
+        <circle cx="24" cy="26" r="2.5" fill="url(#ag)"/>
+        <circle cx="24" cy="26" r="4.5" stroke="url(#ag)" stroke-width="1" stroke-opacity=".4"/>
+        <rect x="22" y="11" width="4" height="3" rx="1" fill="url(#ag)"/>
+        <circle cx="13" cy="17" r="1.3" fill="url(#ag)" opacity=".7"/>
+      </svg>
+    </div><div class="t"><div class="ttl">5 · Стартовые кадры (дёшево)</div><div class="when">картинка под сцену + якорь сходства до оживления</div></div><i class="chev" data-lucide="chevron-down"></i></div>
+      <div class="body"><div class="inner">
+        <div class="meta-row">
+          <span class="mbadge time">15–30 мин на сцену</span>
+          <span class="mbadge cred">~2–4 кр / кадр</span>
+          <span class="mbadge out">Утверждённый стоп-кадр перед дорогим оживлением</span>
+        </div>
+        <p><b>Слоты промта стартового кадра:</b></p>
+        <ul>
+          <li><b>Субъект + якорь сходства</b> — «The SAME woman as the reference — keep her exact face»</li>
+          <li><b>Ракурс</b> — строгий профиль, ¾, фас, полный рост (чётко, не «примерно»)</li>
+          <li><b>Лук</b> — одежда, детали, акцентный цвет (одинаково во всех сценах)</li>
+          <li><b>Сцена / фон / свет</b> — где и как освещено</li>
+          <li><b>Цвет-правило</b> — напр. «black &amp; white EXCEPT lips in red»</li>
+          <li><b>Гард</b> — «ONE single woman only, no duplicate, no extra hands»</li>
+        </ul>
+        <p><b>Воркфлоу:</b> генери 3–4 варианта → выбери лучший → зафиксируй seed и настройки → получи утверждение → только потом оживляй.</p>
+        <p class="ok"><i data-lucide="circle-check"></i> Якорь сходства = реальное фото или обученный аватар, а не текст. На словах модель «идеализирует»: нос тоньше, скулы острее.</p>
+        <div class="pro-tip"><span class="pt-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M9.5 18.5h5M10.5 21.5h3" stroke="url(#ag)" stroke-width="2" stroke-linecap="round"/><path d="M12 2.5a6.2 6.2 0 0 0-3.9 11c.8.7 1.3 1.4 1.4 2.5h5c.1-1.1.6-1.8 1.4-2.5A6.2 6.2 0 0 0 12 2.5z" fill="rgba(255,200,120,.16)" stroke="url(#ag)" stroke-width="2" stroke-linejoin="round"/></svg></span><p><b>Pro:</b> держи один эталонный кадр (утверждённый лук) и сверяй каждый новый кадр с ним перед отправкой заказчику — так не пропустишь дрейф стиля.</p></div>
+        <div class="warn-box"><span class="wi"><svg viewBox="0 0 24 24" fill="none" stroke="#ef926e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5l8.6 15h-17.2z" fill="rgba(239,146,110,.13)"/><path d="M12 10v4.3M12 17.6v.1"/></svg></span><p>Профиль 90° на одном тексте не делай — самый «непохожий» ракурс. Дай реальное боковое фото как жёсткий референс + запрет «не сужать, не заострять».</p></div>
+        <div class="done-bar"><span class="dk"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="rgba(143,206,110,.15)" stroke="#8fce6e" stroke-width="2"/><path d="M8 12.4l2.6 2.6L16.2 9.2" stroke="#8fce6e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p><b>Готово, когда:</b> кадр утверждён заказчиком → безопасно оживлять.</p></div>
+      </div></div></div>
+
+    <!-- STAGE 6 -->
+    <div class="item"><div class="head"><div class="ic">
+      <svg class="pic" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" fill="url(#agf)"/>
+        <path d="M18 35 L31 17" stroke="url(#ag)" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M30 10 l2 5 5 2 -5 2 -2 5 -2-5 -5-2 5-2z" fill="url(#ag)"/>
+        <path d="M14 19 l1.2 3 3 1.2 -3 1.2 -1.2 3 -1.2-3 -3-1.2 3-1.2z" fill="url(#ag)" opacity=".7"/>
+        <circle cx="35" cy="32" r="2" fill="url(#ag)" opacity=".5"/>
+        <circle cx="13" cy="34" r="1.3" fill="url(#ag)" opacity=".4"/>
+      </svg>
+    </div><div class="t"><div class="ttl">6 · Оживление — здесь горят кредиты</div><div class="when">картинка → видео без брака и без слива бюджета</div></div><i class="chev" data-lucide="chevron-down"></i></div>
+      <div class="body"><div class="inner">
+        <div class="meta-row">
+          <span class="mbadge time">3–8 мин / клип</span>
+          <span class="mbadge cred">6–36 кр / 4с</span>
+          <span class="mbadge out">Чистый клип без фризов и деформаций</span>
+        </div>
+        <p><b>Правила генерации клипа:</b></p>
+        <ul>
+          <li class="ok">Одно действие на клип, база 4 сек — не перегружай промт</li>
+          <li class="ok">Камеру фиксируй словами: <code>static shot, no zoom, no pan</code> — иначе модель добавит наезд</li>
+          <li class="ok">Мимика «very subtle» — голову не вертеть, эмоция только взглядом + подбородком</li>
+          <li class="ok">После генерации — QC: фризы, двойник, деформация лица</li>
+          <li class="ok">Всегда генери 2 дубля → бери чистый</li>
+        </ul>
+        <p><b>Модель под бюджет:</b> общий план / мелкое лицо → <code>kling3_0_turbo</code> (≈6 кр/4с); крупный план / важно сходство → <code>seedance_2_0</code> + аватар (≈18–36 кр/4с).</p>
+        <p><b>Примерная смета 10 сцен × 4с:</b> kling-turbo ≈ 60 кр · seedance ≈ 180–360 кр.</p>
+        <p><b>Частые ошибки → решения:</b></p>
+        <ul>
+          <li>Деформация лица на крупном → аватар + подмена лица в nano_banana_pro + широкий план</li>
+          <li>«Двойник / два человека» → добавь гард «ONE person only, no duplicate», генери 2 — бери чистый</li>
+          <li>«Убрать предмет из руки» — не работает → бери базовый кадр, где рука уже пустая</li>
+          <li>Наезд камеры сам по себе → <code>camera stays static, no movement</code> в промте</li>
+        </ul>
+        <div class="done-bar"><span class="dk"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="rgba(143,206,110,.15)" stroke="#8fce6e" stroke-width="2"/><path d="M8 12.4l2.6 2.6L16.2 9.2" stroke="#8fce6e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p><b>Готово, когда:</b> клип без фризов, без деформаций, сходство держится на всей длине.</p></div>
+      </div></div></div>
+
+    <!-- STAGE 7 -->
+    <div class="item"><div class="head"><div class="ic">
+      <svg class="pic" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" fill="url(#agf)"/>
+        <rect x="12" y="11" width="4" height="26" rx="2" fill="url(#ag)" opacity=".3"/>
+        <rect x="22" y="11" width="4" height="26" rx="2" fill="url(#ag)" opacity=".3"/>
+        <rect x="32" y="11" width="4" height="26" rx="2" fill="url(#ag)" opacity=".3"/>
+        <rect x="10" y="18" width="8" height="5" rx="2.5" fill="url(#ag)"/>
+        <rect x="20" y="27" width="8" height="5" rx="2.5" fill="url(#ag)"/>
+        <rect x="30" y="15" width="8" height="5" rx="2.5" fill="url(#ag)"/>
+      </svg>
+    </div><div class="t"><div class="ttl">7 · Грейд / стабилизация / 4K — бесплатно</div><div class="when">локально, 0 кредитов Higgsfield</div></div><i class="chev" data-lucide="chevron-down"></i></div>
+      <div class="body"><div class="inner">
+        <div class="meta-row">
+          <span class="mbadge time">5–15 мин / клип (авто)</span>
+          <span class="mbadge free">0 кредитов</span>
+          <span class="mbadge out">Кадр как со штатива, кино-палитра</span>
+        </div>
+        <p><b>Стабилизация — зачем:</b> после оживления модель часто добавляет дрожь и наезд. Дрожь читается как «дёшево / ИИ».</p>
+        <ul>
+          <li><b>deshake</b> (vidstab) — убирает дрожь кадра</li>
+          <li><b>Лок размера</b> (обратный зум) — убирает наезд → кадр стоит ровно, как со штатива</li>
+          <li><b>unsharp</b> — лёгкая резкость после стабилизации</li>
+        </ul>
+        <p><b>Грейд (цвет):</b> Ч/Б-база + возврат цвета только в нужной зоне по маске. Лёгкое зерно (<code>noise</code> filter) + Ч/Б-база с возвратом цвета через маску = «киношность» без платных плагинов.</p>
+        <p><b>4K:</b> scale + unsharp через ffmpeg — бесплатно. Для Instagram достаточно 1080p.</p>
+        <div class="pro-tip"><span class="pt-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M9.5 18.5h5M10.5 21.5h3" stroke="url(#ag)" stroke-width="2" stroke-linecap="round"/><path d="M12 2.5a6.2 6.2 0 0 0-3.9 11c.8.7 1.3 1.4 1.4 2.5h5c.1-1.1.6-1.8 1.4-2.5A6.2 6.2 0 0 0 12 2.5z" fill="rgba(255,200,120,.16)" stroke="url(#ag)" stroke-width="2" stroke-linejoin="round"/></svg></span><p><b>Pro:</b> запускай стабилизацию и грейд одним скриптом на всю папку клипов — Claude Code автоматизирует пакет через ffmpeg, не надо делать вручную каждый файл.</p></div>
+        <div class="warn-box"><span class="wi"><svg viewBox="0 0 24 24" fill="none" stroke="#ef926e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5l8.6 15h-17.2z" fill="rgba(239,146,110,.13)"/><path d="M12 10v4.3M12 17.6v.1"/></svg></span><p>Платный AI-апскейл не нужен для Instagram — из 1080p норм. Не трать кредиты там, где ffmpeg справляется бесплатно.</p></div>
+        <div class="done-bar"><span class="dk"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="rgba(143,206,110,.15)" stroke="#8fce6e" stroke-width="2"/><path d="M8 12.4l2.6 2.6L16.2 9.2" stroke="#8fce6e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p><b>Готово, когда:</b> кадр как со штатива, палитра ровная на всех сценах, 0 кредитов потрачено.</p></div>
+      </div></div></div>
+
+    <!-- STAGE 8 -->
+    <div class="item"><div class="head"><div class="ic">
+      <svg class="pic" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" fill="url(#agf)"/>
+        <rect x="10" y="17" width="18" height="14" rx="2.5" fill="rgba(255,210,120,.12)" stroke="url(#ag)" stroke-width="2"/>
+        <line x1="14" y1="17" x2="14" y2="31" stroke="url(#ag)" stroke-width="1.5" stroke-opacity=".5"/>
+        <line x1="18" y1="17" x2="18" y2="31" stroke="url(#ag)" stroke-width="1.5" stroke-opacity=".5"/>
+        <line x1="22" y1="17" x2="22" y2="31" stroke="url(#ag)" stroke-width="1.5" stroke-opacity=".5"/>
+        <g stroke="url(#ag)" stroke-width="2.2" stroke-linecap="round">
+          <line x1="31" y1="19" x2="31" y2="29"/>
+          <line x1="35" y1="21" x2="35" y2="27"/>
+          <line x1="39" y1="23" x2="39" y2="25"/>
+        </g>
+        <rect x="10" y="19" width="18" height="4" rx="0" fill="url(#ag)" opacity=".25"/>
+      </svg>
+    </div><div class="t"><div class="ttl">8 · Сборка и звук (CapCut)</div><div class="when">ритм, монтаж и экспорт без джаддера</div></div><i class="chev" data-lucide="chevron-down"></i></div>
+      <div class="body"><div class="inner">
+        <div class="meta-row">
+          <span class="mbadge time">1–3 часа</span>
+          <span class="mbadge free">CapCut бесплатен</span>
+          <span class="mbadge out">Финальный ролик — 1 экспорт, без джаддера</span>
+        </div>
+        <p><b>Структура ролика:</b></p>
+        <ul>
+          <li><b>Хук 0–3с</b> — сильный кадр или движение с первого фрейма, держит внимание</li>
+          <li><b>Тело</b> — жёсткие резы под бит, единый fps</li>
+          <li><b>Концовка / CTA</b> — затемнение или стоп-кадр + призыв (если нужен)</li>
+        </ul>
+        <p><b>Аудио-first:</b> сначала кладёшь дорожку (музыка / SFX) как ритм-скелет, потом режешь клипы под бит. Бесплатные библиотеки звука: <b>Pixabay</b>, <b>Freesound</b>, <b>YouTube Audio Library</b>.</p>
+        <p><b>Монтаж:</b> открытие из чёрного (плавное появление ~0.7с), между сценами — жёсткие резы. Оптический поток ВЫКЛ — добавляет артефакты на AI-видео.</p>
+        <p><b>Параметры экспорта:</b> <code>1080p · 24 fps · H.264 · ~20 Мбит/с</code> — и один раз, не пересохранять.</p>
+        <div class="pro-tip"><span class="pt-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M9.5 18.5h5M10.5 21.5h3" stroke="url(#ag)" stroke-width="2" stroke-linecap="round"/><path d="M12 2.5a6.2 6.2 0 0 0-3.9 11c.8.7 1.3 1.4 1.4 2.5h5c.1-1.1.6-1.8 1.4-2.5A6.2 6.2 0 0 0 12 2.5z" fill="rgba(255,200,120,.16)" stroke="url(#ag)" stroke-width="2" stroke-linejoin="round"/></svg></span><p><b>Pro:</b> 24fps воспринимается как «кино». 30fps — как «обычное видео». Для брендового ролика 24fps выигрывает всегда.</p></div>
+        <div class="warn-box"><span class="wi"><svg viewBox="0 0 24 24" fill="none" stroke="#ef926e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5l8.6 15h-17.2z" fill="rgba(239,146,110,.13)"/><path d="M12 10v4.3M12 17.6v.1"/></svg></span><p>Не ставь 30 fps и не пересохраняй — появится джаддер (дёрганость). Экспортируй один раз финальный файл.</p></div>
+        <div class="done-bar"><span class="dk"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="rgba(143,206,110,.15)" stroke="#8fce6e" stroke-width="2"/><path d="M8 12.4l2.6 2.6L16.2 9.2" stroke="#8fce6e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><p><b>Готово, когда:</b> ритм держит внимание от первого до последнего кадра, экспорт один раз, без джаддера.</p></div>
+      </div></div></div>
+
+  </div>
+</div></section>
+
+<!-- TOOLS -->
+<section class="blk reveal" id="tools"><div class="wrap">
+  <div class="center"><h2>Какая нейросеть под что</h2><p class="h2sub">Справочник по Higgsfield (облачный сервис генерации картинок/видео) — модели внутри него.</p></div>
+  <div class="grid">
+    <div class="tcard"><div class="ic"><svg class="pic" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" fill="url(#agf)"/><circle cx="24" cy="24" r="18" stroke="url(#ag)" stroke-width="1.4" stroke-opacity=".35" stroke-dasharray="2 5"/><g stroke="url(#ag)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="20" r="5"/><path d="M14 35c1.4-5.6 18.6-5.6 20 0"/></g></svg></div><h3>Обученный аватар <span class="m">soul_2</span></h3><p>Генерит ровно лицо клиента. Обучить: Higgsfield → <b>Characters → Train Soul</b> → 5–20 фото → ~10 мин. Спасает крупные планы.</p></div>
+    <div class="tcard"><div class="ic"><svg class="pic" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" fill="url(#agf)"/><g fill="url(#ag)"><path d="M22 11l2.1 5.4 5.4 2.1-5.4 2.1L22 26l-2.1-5.4-5.4-2.1 5.4-2.1z"/><path d="M33 26l1.2 3 3 1.2-3 1.2-1.2 3-1.2-3-3-1.2 3-1.2z"/><path d="M14 28l1 2.4 2.4 1-2.4 1-1 2.4-1-2.4-2.4-1 2.4-1z"/></g></svg></div><h3>Модель правок <span class="m">nano_banana_pro</span></h3><p>Точные правки, мульти-реф (перенос лука по нескольким фото), подмена лица, фон.</p><span class="cost">~2 кр / кадр</span></div>
+    <div class="tcard"><div class="ic"><svg class="pic" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" fill="url(#agf)"/><g stroke="url(#ag)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="22" cy="24" r="12"/><path d="M37 16a13 13 0 0 1 0 16" stroke-opacity=".4"/></g><path d="M19 19l9 5-9 5z" fill="url(#ag)"/></svg></div><h3>Оживление <span class="m">kling / seedance</span></h3><p>Картинка → видео. Kling-turbo ≈ 6 кр/4с (дёшево), Seedance ≈ 18–36 кр/4с (под сходство).</p></div>
+    <div class="tcard"><div class="ic"><svg class="pic" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" fill="url(#agf)"/><g stroke="url(#ag)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M27 13h8v8"/><path d="M35 13l-9 9"/><path d="M21 35h-8v-8"/><path d="M13 35l9-9"/></g></svg></div><h3>Апскейл <span class="m">ByteDance</span></h3><p>Повышает чёткость; финал до 4K доводишь в ffmpeg.</p><span class="cost">~0.17 кр</span></div>
+    <div class="tcard"><div class="ic"><svg class="pic" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" fill="url(#agf)"/><g stroke="url(#ag)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="11" y="14" width="26" height="20" rx="3.2"/><path d="M17 14v20M31 14v20"/></g><g fill="url(#ag)"><circle cx="14" cy="18" r="1.1"/><circle cx="14" cy="24" r="1.1"/><circle cx="14" cy="30" r="1.1"/><circle cx="34" cy="18" r="1.1"/><circle cx="34" cy="24" r="1.1"/><circle cx="34" cy="30" r="1.1"/></g></svg></div><h3>ffmpeg <span class="m">бесплатно</span></h3><p>Бесплатная программа обработки видео: грейд, стабилизация, скорость, склейка, маски.</p><span class="cost">0 кредитов</span></div>
+    <div class="tcard"><div class="ic"><svg class="pic" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" fill="url(#agf)"/><g stroke="url(#ag)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 19v-3a2 2 0 0 1 2-2h3"/><path d="M29 14h3a2 2 0 0 1 2 2v3"/><path d="M34 29v3a2 2 0 0 1-2 2h-3"/><path d="M19 34h-3a2 2 0 0 1-2-2v-3"/><path d="M24 23v3.5M20.5 30c2 1.6 5 1.6 7 0"/></g><g fill="url(#ag)"><circle cx="20" cy="22" r="1.4"/><circle cx="28" cy="22" r="1.4"/></g></svg></div><h3>OpenCV / PIL <span class="m">бесплатно</span></h3><p>Библиотеки покадровой работы с картинкой: композит лица, ретушь, проверка (QC).</p><span class="cost">0 кредитов</span></div>
+  </div>
+  <p class="price"><b>Подписка Higgsfield: PLUS — $59/мес.</b> Пополнение кредитов — от 500 кр ≈ $26 (90 дней).</p>
+</div></section>
+
+<!-- PROMPTS -->
+<section class="blk reveal" id="prompts"><div class="wrap">
+  <div class="center"><h2>Промты, которые я использовал</h2><p class="h2sub">90% качества — правильный контекст на входе (референсы + точные слоты), а не «красивые слова».</p></div>
+  <div class="acc">
+    <div class="item"><div class="head"><div class="ic"><svg class="pic" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" fill="url(#agf)"/><g stroke="url(#ag)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="13" width="24" height="22" rx="3.2"/><path d="M12 21h24M21 21v14"/></g></svg></div><div class="t"><div class="ttl">Анатомия промта (формула)</div></div><i class="chev" data-lucide="chevron-down"></i></div>
+      <div class="body"><div class="inner"><pre>[тип кадра] → [субъект + ЯКОРЬ сходства] → [ракурс] → [композиция] →
+[одежда/континьюити] → [сцена/фон] → [свет/стиль/ЦВЕТ-правило] →
+[негатив/гард] → [референсы-картинки]</pre></div></div></div>
+
+    <div class="item"><div class="head"><div class="ic"><svg class="pic" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" fill="url(#agf)"/><g stroke="url(#ag)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="11" y="14" width="21" height="20" rx="3.2"/><path d="M11 30l5.5-5 4.5 3.5 3-2.5 5 4.5"/><path d="M34 12v8M30 16h8"/></g><circle cx="17" cy="21" r="2.1" fill="url(#ag)"/></svg></div><div class="t"><div class="ttl">Шаблон 1 — стартовый кадр</div><div class="when">nano_banana_pro / soul_2</div></div><i class="chev" data-lucide="chevron-down"></i></div>
+      <div class="body"><div class="inner"><pre>[Тип: cinematic editorial photo, full-body / medium-wide]
+ONE single woman only — no duplicate, no second person.   <span class="g">← гард</span>
+The SAME woman as the reference — keep her exact face.
+[Ракурс: strict left-side profile, head not turned]
+[Композиция: she stands FAR LEFT, space ahead to walk into]
+[Одежда: точный лук + детали из других сцен]
+[Сцена/фон: где и как освещено]
+[Свет/стиль: cinematic, premium]
+[ЦВЕТ-правило: black & white EXCEPT lips in red — single accent]
+[Негатив: no duplicate, no extra hands]
++ референсы: 1) фото-якорь сходства  2) реф сцены/лука</pre></div></div></div>
+
+    <div class="item"><div class="head"><div class="ic"><svg class="pic" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" fill="url(#agf)"/><g stroke="url(#ag)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 34l2.5-8.5 13-13 6 6-13 13L14 34z"/><path d="M27 12.5l6 6"/><path d="M16.5 25.5l6 6"/></g></svg></div><div class="t"><div class="ttl">Шаблон 2 — точечная правка</div><div class="when">keep X, change ONLY Y</div></div><i class="chev" data-lucide="chevron-down"></i></div>
+      <div class="body"><div class="inner"><pre>Keep the FIRST image unchanged — same face, pose, frame, color.
+ONE woman only, no duplicate.                             <span class="g">← гард</span>
+Change ONLY these things:
+   (1) [правка 1 — конкретно]
+   (2) [правка 2 — конкретно]
+Do NOT alter her face / head.
+[ЦВЕТ-правило повторить]
++ референсы: базовый кадр + (опц.) реф детали</pre>
+        <p><b>Правила:</b> одна правка за прогон · чтобы «убрать предмет» — бери базу, где его уже нет · всегда дубль-гард.</p>
+      </div></div></div>
+
+    <div class="item"><div class="head"><div class="ic"><svg class="pic" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" fill="url(#agf)"/><g stroke="url(#ag)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19.5l22-4 1.6 5.6-22 4z"/><path d="M13.6 23.5h22V36a2 2 0 0 1-2 2H15.6a2 2 0 0 1-2-2z"/><path d="M18 16.4l2.4 4.2M24 15.3l2.4 4.2M30 14.2l2.4 4.2"/></g></svg></div><div class="t"><div class="ttl">Шаблон 3 — оживление (image-to-video)</div><div class="when">kling3_0_turbo / seedance_2_0</div></div><i class="chev" data-lucide="chevron-down"></i></div>
+      <div class="body"><div class="inner"><pre>Static locked camera — no zoom, no pan, no shake.         <span class="g">← запрет движения</span>
+[Действие + направление: walks right→left, smooth pace]
+Keep her EXACT face — do NOT re-render, distort or age it.
+[Ракурс-лок: strict profile, head does NOT turn to camera]
+[Микро-мимика: very subtle — slight chin-up + cold smirk]
+[Континьюити: ponytail / strap / gloves / red lips stay]
+[Стиль/цвет: black & white cinematic]
++ start_image = утверждённый кадр</pre>
+        <p><b>Правила:</b> мимика «very subtle» · всегда «do NOT re-render the face» · камеру фиксируй словами.</p>
+      </div></div></div>
+  </div>
+</div></section>
+
+<!-- CLAUDE CODE -->
+<section class="blk reveal" id="cc"><div class="wrap">
+  <div class="center"><h2>Claude Code — штаб,<br>который экономит кредиты</h2></div>
+  <div class="grid" style="grid-template-columns:1fr;margin-top:30px">
+    <div class="tcard">
+      <p style="color:var(--ivory);font-size:17px;font-weight:700;margin-bottom:6px"><b>Как шла работа</b></p>
+      <p style="color:var(--sub);font-size:16px;margin:8px 0">— держит контекст и правила проекта в файлах, пишет промты;</p>
+      <p style="color:var(--sub);font-size:16px;margin:8px 0">— <b style="color:var(--ivory)">управляет Higgsfield через MCP</b> — генерации из одного места, без ручных кликов;</p>
+      <p style="color:var(--sub);font-size:16px;margin:8px 0">— грейд / стабилизация / 4K скриптами <b style="color:var(--ivory)">ffmpeg / OpenCV — бесплатно</b>;</p>
+      <p style="color:var(--sub);font-size:16px;margin:8px 0">— берёт дешёвую модель под задачу и ловит брак на проверке <b style="color:var(--ivory)">до</b> повторной генерации.</p>
+    </div>
+  </div>
+  <div class="acc" style="margin-top:18px">
+    <div class="item open"><div class="head"><div class="ic"><svg class="pic" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" fill="url(#agf)"/><g stroke="url(#ag)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 13v7M29 13v7"/><path d="M15 20h18v3a9 9 0 0 1-18 0z"/><path d="M24 32v6"/></g></svg></div><div class="t"><div class="ttl">Подключение и запуск (для новичка)</div></div><i class="chev" data-lucide="chevron-down"></i></div>
+      <div class="body" style="max-height:1400px"><div class="inner">
+        <p><b><i data-lucide="download"></i> Если Claude Code ещё нет:</b> скачай <b>десктоп-приложение Claude Code</b> (Windows/Mac) на официальном сайте Anthropic (раздел Claude Code), либо поставь CLI в терминал.</p>
+        <p><b><i data-lucide="plug"></i> Включить коннектор Higgsfield</b> (прямо в приложении) — вставь команду:</p>
+        <pre>claude mcp add --transport http --scope user higgsfield https://mcp.higgsfield.ai/mcp</pre>
+        <p>→ при первом вызове откроется браузер — войди в свой Higgsfield (OAuth). Проверь: <code>/mcp</code>.</p>
+        <p><b><i data-lucide="wrench"></i> Локальные инструменты (терминал, не MCP):</b></p>
+        <ul><li>ffmpeg → <code>winget install ffmpeg</code></li><li>OpenCV + Python → <code>pip install opencv-python numpy</code></li><li>curl — встроен в Windows</li></ul>
+        <p><b><i data-lucide="circle-help"></i> Как выполнить команду:</b> команды <code>claude…/winget…/pip…</code> вставляй в <b>терминал</b> (Windows: Пуск → набери «PowerShell» → Enter → вставь строку → Enter). Команды со слешем (<code>/mcp</code>) — внутри сессии Claude Code.</p>
+        <p style="color:var(--muted)"><i data-lucide="puzzle"></i> Про скиллы — честно: под видео отдельные скиллы не нужны, всё держится на Higgsfield MCP + локальном ffmpeg/OpenCV.</p>
+      </div></div></div>
+  </div>
+</div></section>
+
+<!-- CHECKLIST -->
+<section class="blk reveal"><div class="wrap">
+  <div class="center"><h2>Памятка: как не сжечь<br>деньги и время</h2></div>
+  <div class="check"><ul>
+    <li><i data-lucide="check"></i>Лок лука → дешёвый кадр → утвердил → оживил</li>
+    <li><i data-lucide="check"></i>Реальное фото > промта на сходстве</li>
+    <li><i data-lucide="check"></i>Дешёвая модель на мелком лице</li>
+    <li><i data-lucide="check"></i>Грейд / 4K на ffmpeg, не на кредитах</li>
+    <li><i data-lucide="check"></i>Минимум мимики при оживлении</li>
+    <li><i data-lucide="check"></i>Проверка (QC) до сборки</li>
+    <li><i data-lucide="check"></i>Экспорт раз, 24 fps</li>
+  </ul></div>
+</div></section>
+
+<!-- FAQ -->
+<section class="blk reveal" id="faq"><div class="wrap">
+  <div class="center"><h2>Частые вопросы</h2></div>
+  <div class="acc" style="margin-top:30px">
+    <div class="item"><div class="head"><div class="t"><div class="ttl">Нужен ли дорогой ПК?</div></div><i class="chev" data-lucide="chevron-down"></i></div><div class="body"><div class="inner" style="padding-left:24px"><p>Нет — тяжёлое считают облачные модели; локально только бесплатный ffmpeg.</p></div></div></div>
+    <div class="item"><div class="head"><div class="t"><div class="ttl">Сколько уходит кредитов?</div></div><i class="chev" data-lucide="chevron-down"></i></div><div class="body"><div class="inner" style="padding-left:24px"><p>Зависит от числа сцен; принцип «кадр дёшево → оживление на утверждённом» режет расход в разы.</p></div></div></div>
+    <div class="item"><div class="head"><div class="t"><div class="ttl">Можно без обученного аватара?</div></div><i class="chev" data-lucide="chevron-down"></i></div><div class="body"><div class="inner" style="padding-left:24px"><p>Для общих планов — да; для крупных лиц аватар спасает сходство.</p></div></div></div>
+    <div class="item"><div class="head"><div class="t"><div class="ttl">С чего начать?</div></div><i class="chev" data-lucide="chevron-down"></i></div><div class="body"><div class="inner" style="padding-left:24px"><p>С брифа (этап 1) и принципа экономии (блок «Главный принцип»).</p></div></div></div>
+  </div>
+</div></section>
+
+<!-- FINAL -->
+<section class="final reveal"><div class="wrap">
+  <div class="eyebrow"><span class="dot"></span>СПАСИБО, ЧТО ТЫ ЗДЕСЬ</div>
+  <p class="thanks" style="margin-top:22px"><b>Спасибо, что подписался <i data-lucide="heart" style="width:18px;height:18px;vertical-align:-3px;color:#FF6B6B"></i></b> Гайд открыт полностью. Дальше будет ещё много такого же по делу — разборы реальных кейсов, связки и приёмы, что экономят время и деньги. Возвращайся за новым.</p>
+  <p class="thanks" style="margin-top:18px">Вопросы? Пиши <b>в комментариях под постом в канале</b> <i data-lucide="arrow-down" style="width:18px;height:18px;vertical-align:-3px;color:#FF9A2E"></i></p>
+  <a class="handle" href="https://t.me/ClaudeCodich" target="_blank">@ClaudeCodich</a>
+</div></section>
+
+<footer>Claude — Кодыч · AI · реальные кейсы без воды</footer>
+
+<script>
+  // accordions
+  document.querySelectorAll('.item .head').forEach(h=>{
+    h.addEventListener('click',()=>{
+      const it=h.closest('.item'); const body=it.querySelector('.body'); const open=it.classList.contains('open');
+      it.classList.toggle('open');
+      body.style.maxHeight = open ? '0px' : (body.scrollHeight+40)+'px';
+    });
+  });
+  // scroll reveal
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.style.opacity=1;e.target.style.transform='none';io.unobserve(e.target);}})},{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>{el.style.opacity=0;el.style.transform='translateY(28px)';el.style.transition='opacity .7s ease, transform .7s ease';io.observe(el);});
+  // icons
+  window.addEventListener('load',()=>{ if(window.lucide) lucide.createIcons(); });
+  if(window.lucide) lucide.createIcons();
+</script>
+</body>
+</html>
