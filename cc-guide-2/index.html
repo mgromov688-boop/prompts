@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Арсенал Claude Code — Гайд 2 · Claude Кодыч</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#111111; --bg-deep:#0a0a0a; --card:#1a1a1a; --card-2:#222222;
+  --border:#2a2a2a; --border-l:#333333;
+  --text:#eeeeee; --muted:#8a8a8a; --dim:#5a5a5a;
+  --accent:#FF9A2E; --accent-2:#FFC15A; --accent-3:#FF7A00;
+  --accent-muted:rgba(255,154,46,.14); --accent-glow:rgba(255,154,46,.42);
+  --success:#4ade80; --danger:#ff6b5a;
+  --r-sm:6px; --r-md:10px; --r-lg:14px; --r-xl:18px; --pill:100px;
+  --max:1200px;
+  --grad-text:linear-gradient(135deg,#FFE9C2 0%,#FFC15A 45%,#FF9A2E 100%);
+  --grad-cta:linear-gradient(135deg,#FFC15A 0%,#FF9A2E 60%,#FF7A00 100%);
+  --font:"Geist","Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg-deep);color:var(--text);font-family:var(--font);line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+svg.i{width:22px;height:22px;stroke:currentColor;stroke-width:1.75;fill:none;stroke-linecap:round;stroke-linejoin:round;display:block}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--accent)}
+h1,h2,h3{font-weight:800;letter-spacing:-2px;line-height:1.03}
+h2{font-size:clamp(30px,5vw,54px)}
+.sub{color:var(--muted);font-size:clamp(15px,2vw,18px);line-height:1.6}
+.grad{background:var(--grad-text);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:15px;border-radius:var(--pill);padding:14px 26px;cursor:pointer;border:0;transition:transform .18s var(--ease),opacity .18s}
+.btn-primary{color:#1a1100;background:var(--grad-cta);box-shadow:0 8px 30px var(--accent-glow),inset 0 1px 0 rgba(255,255,255,.35)}
+.btn-primary:hover{transform:translateY(-2px)}
+.btn-ghost{color:var(--text);background:rgba(255,255,255,.04);border:1px solid var(--border-l)}
+.btn-ghost:hover{background:rgba(255,255,255,.08)}
+section{padding:88px 0;position:relative}
+
+/* nav */
+.nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:50;width:min(1120px,calc(100% - 28px));
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:16px;
+  background:rgba(18,18,18,.74);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:1px solid var(--border);border-radius:var(--pill);padding:10px 14px 10px 16px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:15px;letter-spacing:-.3px}
+.brand img{width:30px;height:30px;border-radius:9px;object-fit:cover;box-shadow:0 0 0 1px var(--border-l)}
+.nav-links{display:flex;gap:8px;justify-content:center}
+.nav-links a{font-size:13.5px;font-weight:600;color:var(--muted);padding:8px 14px;border-radius:var(--pill);transition:.15s}
+.nav-links a:hover{color:var(--text);background:rgba(255,255,255,.05)}
+.nav-badge{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--accent-2);background:var(--accent-muted);border:1px solid rgba(255,170,80,.3);border-radius:var(--pill);padding:8px 15px;white-space:nowrap}
+.nav-badge::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+
+/* hero */
+.hero{padding-top:150px;text-align:center;overflow:hidden;position:relative}
+.hero::before{content:"";position:absolute;top:-160px;left:50%;transform:translateX(-50%);width:900px;height:600px;z-index:1;
+  background:radial-gradient(closest-side,rgba(255,140,45,.22),transparent 70%);pointer-events:none}
+.net{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.hero .wrap{position:relative;z-index:2}
+.hero-logo{width:80px;height:80px;display:block;margin:0 auto 20px;filter:drop-shadow(0 0 24px rgba(255,154,46,.5));animation:floaty 6s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.badge{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--accent-2);
+  background:var(--accent-muted);border:1px solid rgba(255,170,80,.28);border-radius:var(--pill);padding:7px 16px}
+.hero h1{font-size:clamp(40px,7.5vw,82px);letter-spacing:-3px;margin:24px 0 0}
+.hero .sub{max-width:660px;margin:22px auto 0}
+.hero-cta{display:flex;gap:14px;justify-content:center;margin-top:34px;flex-wrap:wrap}
+.chips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:30px}
+.chip{font-size:13px;color:var(--muted);background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--pill);padding:8px 15px}
+.chip b{color:var(--accent-2);font-weight:700}
+
+/* browser frame */
+.frame{margin:54px auto 0;max-width:880px;border:1px solid var(--border-l);border-radius:var(--r-xl);
+  background:var(--card);box-shadow:0 40px 120px rgba(0,0,0,.6);overflow:hidden;
+  transform:perspective(1600px) rotateX(7deg);transform-origin:top}
+.frame.flat{transform:none;margin-top:0}
+.frame-bar{display:flex;align-items:center;gap:8px;padding:13px 16px;background:#161616;border-bottom:1px solid var(--border)}
+.dot{width:11px;height:11px;border-radius:50%}
+.dot.r{background:#ff5f57}.dot.y{background:#febc2e}.dot.g{background:#28c840}
+.frame-url{margin-left:12px;font-family:var(--mono);font-size:12px;color:var(--dim);background:#101010;border:1px solid var(--border);border-radius:var(--pill);padding:5px 14px}
+.live{margin-left:auto;font-size:11px;font-weight:700;color:var(--success);display:flex;align-items:center;gap:6px}
+.live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 8px var(--success)}
+.term{padding:24px;font-family:var(--mono);font-size:13.5px;line-height:1.75;text-align:left;background:linear-gradient(180deg,#141414,#0f0f0f)}
+.term .u{color:var(--accent-2)} .term .c{color:var(--muted)} .term .ok{color:var(--success)} .term .p{color:var(--text)}
+.term .cur{display:inline-block;width:9px;height:16px;background:var(--accent);vertical-align:-3px;animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+.head{text-align:center;max-width:760px;margin:0 auto 50px}
+.head h2{margin:14px 0 0}
+.head .sub{margin:16px auto 0}
+
+/* author block */
+.author{max-width:760px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:var(--r-xl);
+  padding:28px 30px;display:flex;gap:22px;align-items:center}
+.author img{width:74px;height:74px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px var(--accent),0 0 22px var(--accent-glow);flex-shrink:0}
+.author .nm{font-weight:800;font-size:18px;letter-spacing:-.4px}
+.author .rl{color:var(--accent-2);font-size:13px;font-weight:600;margin-top:2px}
+.author p{color:var(--muted);font-size:14.5px;line-height:1.55;margin-top:8px}
+
+/* compare */
+.cmp{max-width:860px;margin:0 auto;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;background:var(--card)}
+.cmp-row{display:grid;grid-template-columns:1.4fr 1fr 1fr;align-items:center}
+.cmp-row+.cmp-row{border-top:1px solid var(--border)}
+.cmp-row>div{padding:16px 20px;font-size:15px}
+.cmp-row .lbl{color:var(--muted)}
+.cmp-head .lbl{color:var(--dim);font-size:13px;text-transform:uppercase;letter-spacing:1px}
+.cmp-head>div{font-weight:700;font-size:14px}
+.cmp-ours{background:var(--accent-muted);border-left:2px solid var(--accent);color:var(--text);font-weight:600}
+.cmp-head .cmp-ours{color:var(--accent)}
+.cmp .x{color:var(--dim)}
+
+/* stepper */
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.step{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:22px 18px;transition:.2s}
+.step:hover{border-color:var(--border-l);transform:translateY(-3px)}
+.step .n{width:30px;height:30px;border-radius:50%;background:var(--accent-muted);color:var(--accent);font-weight:800;display:grid;place-items:center;font-size:14px;margin-bottom:14px}
+.step h4{font-size:16px;font-weight:700;letter-spacing:-.4px}
+.step p{color:var(--muted);font-size:13.5px;margin-top:7px;line-height:1.5}
+
+/* showcase */
+.show{display:grid;grid-template-columns:0.9fr 1.1fr;gap:48px;align-items:start}
+.show-left{position:sticky;top:120px}
+.show-list{margin-top:26px;display:flex;flex-direction:column;gap:6px}
+.show-item{padding:14px 16px;border-radius:var(--r-md);border:1px solid transparent;color:var(--muted);transition:.25s}
+.show-item.on{background:var(--card);border-color:var(--border-l);color:var(--text)}
+.show-item.on .si-t{color:var(--accent)}
+.si-t{font-weight:700;font-size:15px}
+.si-d{font-size:13px;color:var(--muted);margin-top:4px}
+.show-right{display:flex;flex-direction:column;gap:20px}
+
+/* interface annotate */
+.iface{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.iface .notes{display:flex;flex-direction:column;gap:14px}
+.inote{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:14px 16px}
+.inote .ic{color:var(--accent);flex-shrink:0;margin-top:1px}
+.inote b{font-weight:700;font-size:14.5px}
+.inote span{color:var(--muted);font-size:13.5px;display:block;margin-top:2px;line-height:1.45}
+.inote code{font-family:var(--mono);color:var(--accent-2);font-size:12.5px}
+
+/* bento / cards grid */
+.bento{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.bento .b{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px;transition:.2s}
+.bento .b:hover{border-color:var(--border-l);transform:translateY(-3px)}
+.bento .b.wide{grid-column:span 2}
+.b .ic{width:42px;height:42px;border-radius:11px;background:var(--accent-muted);display:grid;place-items:center;color:var(--accent);margin-bottom:16px}
+.b h4{font-size:17px;font-weight:700;letter-spacing:-.4px}
+.b p{color:var(--muted);font-size:14px;margin-top:8px;line-height:1.55}
+.b .tags{margin-top:14px;display:flex;flex-wrap:wrap;gap:7px}
+.b .tags code{font-family:var(--mono);font-size:11.5px;color:var(--accent-2);background:rgba(255,154,46,.08);border:1px solid rgba(255,170,80,.2);border-radius:6px;padding:3px 8px}
+
+/* lifehacks */
+.hacks{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.hack{display:flex;gap:16px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px 22px;transition:.2s}
+.hack:hover{border-color:var(--border-l)}
+.hack .ic{color:var(--accent);flex-shrink:0;margin-top:2px}
+.hack h4{font-size:15.5px;font-weight:700}
+.hack p{color:var(--muted);font-size:13.5px;margin-top:5px;line-height:1.5}
+.hack code{font-family:var(--mono);color:var(--accent-2);font-size:13px}
+
+/* prompts */
+.prm{display:flex;flex-direction:column;gap:16px;max-width:920px;margin:0 auto}
+.pcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px 26px}
+.pcard .ph{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.pcard .tag{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent)}
+.pcard h4{font-size:19px;font-weight:700;letter-spacing:-.4px;margin:6px 0 0}
+.pcard .meta{color:var(--muted);font-size:14px;margin-top:10px;line-height:1.55}
+.pcard .meta b{color:var(--text);font-weight:600}
+.toggle{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:13.5px;color:var(--accent);background:var(--accent-muted);border:1px solid rgba(255,170,80,.3);border-radius:var(--pill);padding:9px 16px;cursor:pointer;white-space:nowrap}
+.toggle svg{width:16px;height:16px;transition:transform .25s}
+.toggle.open svg{transform:rotate(180deg)}
+.pbody{max-height:0;overflow:hidden;transition:max-height .4s var(--ease)}
+.pbody-in{margin-top:18px}
+.codebox{position:relative;background:#0d0d0d;border:1px solid var(--border);border-radius:var(--r-md);padding:18px 18px 18px;font-family:var(--mono);font-size:12.5px;line-height:1.65;color:#c8c8c8;white-space:pre-wrap;overflow-x:auto}
+.copy{position:absolute;top:12px;right:12px;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--muted);background:#161616;border:1px solid var(--border-l);border-radius:var(--r-sm);padding:6px 11px;cursor:pointer}
+.copy:hover{color:var(--text)} .copy.done{color:var(--success);border-color:var(--success)}
+
+/* extras */
+.give{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start;max-width:1000px;margin:0 auto}
+.give.tri{grid-template-columns:1fr 1fr 1fr}
+.give .col h4{font-size:16px;font-weight:700;letter-spacing:-.4px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.give .col h4 .ic{color:var(--accent)}
+@media(max-width:900px){.give,.give.tri{grid-template-columns:1fr}}
+
+/* connector table */
+.ctable{max-width:940px;margin:0 auto;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;background:var(--card)}
+.ctable .cr{display:grid;grid-template-columns:1fr 1fr 1.3fr;align-items:center}
+.ctable .cr+.cr{border-top:1px solid var(--border)}
+.ctable .cr>div{padding:14px 18px;font-size:14px}
+.ctable .cr .k{font-weight:700;color:var(--text);display:flex;align-items:center;gap:9px}
+.ctable .cr .k svg{width:17px;height:17px;color:var(--accent);stroke:currentColor;fill:none;stroke-width:1.75;flex-shrink:0}
+.ctable .cr .t{color:var(--accent-2);font-size:13px}
+.ctable .cr .d{color:var(--muted);font-size:13.5px;line-height:1.45}
+.ctable .ch>div{color:var(--dim);font-size:12px;text-transform:uppercase;letter-spacing:1px;font-weight:700}
+
+/* === premium depth pass === */
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background-image:repeating-linear-gradient(90deg,rgba(255,165,75,.016) 0 1px,transparent 1px 124px);-webkit-mask:linear-gradient(180deg,transparent,#000 8%,#000 92%,transparent);mask:linear-gradient(180deg,transparent,#000 8%,#000 92%,transparent)}
+.nav,header,section{position:relative;z-index:1}
+.bento .b,.step,.hack,.pcard,.inote,.author,.cmp,.ctable,.secbox{box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 26px 50px -32px rgba(0,0,0,.85)}
+.bento .b:hover,.step:hover,.hack:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 26px 50px -28px rgba(0,0,0,.85),0 0 0 1px rgba(255,154,46,.2)}
+.b .ic{position:relative}
+.ic.pulse::before,.ic.pulse::after{content:"";position:absolute;inset:-2px;border-radius:13px;border:1px solid rgba(255,154,46,.55);animation:ring 2.8s ease-out infinite;pointer-events:none}
+.ic.pulse::after{animation-delay:1.4s}
+@keyframes ring{0%{transform:scale(.72);opacity:.7}100%{transform:scale(1.85);opacity:0}}
+.step{position:relative}
+.step::after{content:"";position:absolute;top:37px;right:-14px;width:14px;border-top:2px dashed rgba(255,154,46,.45)}
+.step:last-child::after{display:none}
+.btn-primary{position:relative;overflow:hidden}
+.btn-primary::after{content:"";position:absolute;top:0;left:-70%;width:45%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.42),transparent);transform:skewX(-20deg);animation:shine 4.2s ease-in-out infinite;pointer-events:none}
+@keyframes shine{0%,55%{left:-70%}100%{left:140%}}
+.cmp-ours{box-shadow:inset 2px 0 0 var(--accent),inset 0 0 38px rgba(255,154,46,.06)}
+.stats{display:flex;justify-content:center;margin-top:32px;flex-wrap:wrap}
+.stat{padding:4px 30px;text-align:center}
+.stat+.stat{border-left:1px solid var(--border)}
+.stat b{display:block;font-size:27px;font-weight:800;background:var(--grad-text);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px}
+.stat span{font-size:12.5px;color:var(--muted)}
+@media(max-width:560px){.step::after{display:none}.stat{padding:4px 18px}}
+
+/* security dashboard */
+.secbox{max-width:960px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:var(--r-xl);padding:30px;display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:center}
+.secbox .cap{font-size:12.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--danger);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+.secbox .cap::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--danger);box-shadow:0 0 8px var(--danger)}
+.chart .barrow{display:flex;justify-content:space-between;font-size:13.5px;margin:0 0 7px;color:var(--text)}
+.chart .barrow b{color:var(--accent-2);font-weight:700}
+.chart .bartrack{height:11px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:100px;overflow:hidden;margin-bottom:20px}
+.chart .barfill{height:100%;background:var(--grad-cta);box-shadow:0 0 12px var(--accent-glow);border-radius:100px}
+.secnums{display:flex;gap:14px;flex-wrap:wrap}
+.secnum{flex:1;min-width:120px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md);padding:16px}
+.secnum b{display:block;font-size:26px;font-weight:800;color:var(--accent);letter-spacing:-1px}
+.secnum span{font-size:12px;color:var(--muted);line-height:1.35;display:block;margin-top:2px}
+.secnote{color:var(--muted);font-size:13px;margin-top:16px;line-height:1.5}
+.warnlist{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:960px;margin:26px auto 0}
+.warn{display:flex;gap:13px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:15px 17px}
+.warn .m{color:var(--accent);font-weight:800;flex-shrink:0;font-size:18px;line-height:1.2}
+.warn b{font-weight:700;font-size:14.5px}
+.warn span{color:var(--muted);font-size:13px;display:block;margin-top:3px;line-height:1.45}
+.tools{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:24px}
+.tool-pill{font-size:13px;color:var(--accent-2);background:var(--accent-muted);border:1px solid rgba(255,170,80,.3);border-radius:var(--pill);padding:8px 16px;font-weight:600}
+.src{text-align:center;color:var(--dim);font-size:12px;margin-top:18px}
+
+/* quote / story card */
+.quote{max-width:880px;margin:26px auto 0;background:linear-gradient(180deg,rgba(255,154,46,.06),rgba(26,26,26,.6));border:1px solid rgba(255,170,80,.24);border-left:3px solid var(--accent);border-radius:var(--r-lg);padding:26px 30px}
+.quote .lbl{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.quote p{color:var(--text);font-size:16px;line-height:1.65}
+.quote p+p{margin-top:12px;color:var(--muted);font-size:14.5px}
+
+/* faq */
+.faq{max-width:760px;margin:0 auto}
+.q{border-bottom:1px solid var(--border)}
+.q button{width:100%;text-align:left;background:0;border:0;color:var(--text);font:inherit;font-size:17px;font-weight:600;padding:22px 4px;display:flex;justify-content:space-between;gap:16px;cursor:pointer}
+.q.open button{color:var(--accent)}
+.q .pm{color:var(--muted);font-size:24px;font-weight:400;line-height:1}
+.q.open .pm{color:var(--accent)}
+.q .a{max-height:0;overflow:hidden;transition:max-height .35s var(--ease)}
+.q .a p{color:var(--muted);font-size:15px;line-height:1.6;padding:0 4px 22px}
+
+/* footer */
+.foot{text-align:center;background:var(--bg);border-top:1px solid var(--border);overflow:hidden;position:relative}
+.beams{position:absolute;inset:0;pointer-events:none;opacity:.5;background:repeating-linear-gradient(90deg,transparent 0 60px,rgba(255,154,46,.07) 60px 61px);-webkit-mask:linear-gradient(180deg,transparent,#000 60%);mask:linear-gradient(180deg,transparent,#000 60%)}
+.foot .thanks{position:relative;display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:var(--accent-2);background:var(--accent-muted);border:1px solid rgba(255,170,80,.3);border-radius:var(--pill);padding:9px 18px;margin-bottom:22px}
+.foot h2{position:relative}
+.foot .sub{max-width:540px;margin:16px auto 0}
+.footer-bar{border-top:1px solid var(--border);margin-top:72px;padding:24px 0;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;color:var(--dim);font-size:13px}
+.footer-bar .links{display:flex;gap:20px}
+.footer-bar a:hover{color:var(--muted)}
+
+.rv{opacity:0;transform:translateY(32px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.rv.in{opacity:1;transform:none}
+
+@media(max-width:900px){
+  .nav-links{display:none}
+  .nav{grid-template-columns:1fr auto}
+  .show{grid-template-columns:1fr;gap:24px}.show-left{position:static}
+  .iface{grid-template-columns:1fr;gap:24px}
+  .bento{grid-template-columns:1fr 1fr}
+  .steps{grid-template-columns:1fr 1fr}
+  .hacks,.warnlist{grid-template-columns:1fr}
+  .secbox{grid-template-columns:1fr;gap:24px}
+  .frame{transform:none}
+  .ctable .cr{grid-template-columns:1fr 1fr}
+  .ctable .cr .d{grid-column:1/-1;padding-top:0}
+  .ctable .ch{display:none}
+}
+@media(max-width:560px){
+  section{padding:60px 0}
+  .cmp-row{grid-template-columns:1.2fr .9fr .9fr}.cmp-row>div{padding:13px;font-size:13px}
+  .bento,.steps{grid-template-columns:1fr}.bento .b.wide{grid-column:span 1}
+  .author{flex-direction:column;text-align:center;padding:24px}
+  .hero{padding-top:140px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand"><img src="avatar.jpg" alt="Claude Кодыч"> Claude Кодыч</div>
+  <div class="nav-links">
+    <a href="#connectors">Коннекторы</a>
+    <a href="#skills">Скилы</a>
+    <a href="#security">Безопасность</a>
+    <a href="#arsenal">Мой арсенал</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <span class="nav-badge">Часть 2 · Арсенал</span>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <canvas class="net" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <img class="hero-logo" src="claude_amber.svg" alt="Claude">
+    <span class="badge">● Гайд · Часть 2 · для подписчиков</span>
+    <h1>Арсенал<br><span class="grad">Claude Code</span></h1>
+    <p class="sub">Гайд 1 — как поставить. Здесь — как дать ему руки: коннекторы к твоим сервисам, готовые навыки-скилы и рой агентов. Максимально по делу, простым языком.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#connectors">Как подключить →</a>
+      <a class="btn btn-ghost" href="#arsenal">Мой арсенал</a>
+    </div>
+    <div class="chips">
+      <span class="chip">видит твои <b>сервисы</b></span>
+      <span class="chip">рой <b>агентов</b></span>
+      <span class="chip">подключение <b>без кода</b></span>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>MCP</b><span>единый разъём</span></div>
+      <div class="stat"><b>50+</b><span>готовых скилов</span></div>
+      <div class="stat"><b>рой</b><span>агентов в команде</span></div>
+    </div>
+    <div class="frame rv">
+      <div class="frame-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="frame-url">claude code — коннекторы</span><span class="live">LIVE</span></div>
+      <div class="term">
+        <div class="u">› claude mcp add notion -- npx -y @notion/mcp</div>
+        <div class="c"># подключаю коннектор…</div>
+        <div class="ok">✓ notion подключён · доступ: только чтение</div>
+        <div class="u" style="margin-top:8px">› /mcp</div>
+        <div class="c"># активные: notion · obsidian · context7 · gmail · аналитика</div>
+        <div class="p" style="margin-top:8px">› <span class="cur"></span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- AUTHOR / THANKS -->
+<section style="padding-top:40px">
+  <div class="wrap">
+    <div class="author rv">
+      <img src="avatar.jpg" alt="Claude Кодыч">
+      <div>
+        <div class="nm">Рад, что читаешь дальше 🙌</div>
+        <div class="rl">Claude Кодыч · building in public</div>
+        <p>Гайд 1 показал, как поставить Claude Code. Здесь — мой реальный арсенал: что подключено, зачем, как это ставить и как не подставиться на безопасности. Всё на живом сетапе, по шагам.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARE -->
+<section id="arsenal-lead">
+  <div class="wrap">
+    <div class="head rv"><span class="eyebrow">В чём скачок</span><h2>Claude «в коробке» —<br>и Claude <span class="grad">с арсеналом</span></h2></div>
+    <div class="cmp rv">
+      <div class="cmp-row cmp-head"><div class="lbl">Что меняется</div><div>В коробке</div><div class="cmp-ours">С арсеналом</div></div>
+      <div class="cmp-row"><div class="lbl">Доступ к данным</div><div class="x">только эта папка</div><div class="cmp-ours">заметки, почта, аналитика</div></div>
+      <div class="cmp-row"><div class="lbl">Масштаб задачи</div><div class="x">одна за раз</div><div class="cmp-ours">рой агентов параллельно</div></div>
+      <div class="cmp-row"><div class="lbl">Навыки</div><div class="x">общие</div><div class="cmp-ours">готовые скилы под задачу</div></div>
+      <div class="cmp-row"><div class="lbl">Рост</div><div class="x">сам ищешь как лучше</div><div class="cmp-ours">сам подсказывает, чем усилиться</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- STEPS -->
+<section>
+  <div class="wrap">
+    <div class="head rv"><span class="eyebrow">Как подключить арсенал</span><h2>5 шагов — и он <span class="grad">выходит из чата</span></h2></div>
+    <div class="steps rv">
+      <div class="step"><div class="n">1</div><h4>Настройки</h4><p>Открой раздел Connectors (или команду /mcp) — тут живёт весь арсенал.</p></div>
+      <div class="step"><div class="n">2</div><h4>Коннектор</h4><p>Добавь MCP кнопкой или одной строкой. Дай минимум доступа.</p></div>
+      <div class="step"><div class="n">3</div><h4>Скил</h4><p>Поставь нужный навык — из Anthropic или с GitHub.</p></div>
+      <div class="step"><div class="n">4</div><h4>Проверь</h4><p>Перед установкой с GitHub — проверка на безопасность (обязательно).</p></div>
+      <div class="step"><div class="n">5</div><h4>Усилься</h4><p>Спроси сессию, чем усилиться → найди на GitHub → подключи.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONNECTORS (deep) -->
+<section id="connectors">
+  <div class="wrap">
+    <div class="head rv"><span class="eyebrow">Коннекторы · MCP</span><h2>Дай ему <span class="grad">руки</span></h2><p class="sub">Самое важное в Части 2. Разбираем на пальцах: что это, зачем и как подключить.</p></div>
+
+    <div class="quote rv" style="margin-bottom:40px">
+      <div class="lbl">Что такое коннектор — простыми словами</div>
+      <p>Обычный чат живёт в аквариуме: знает только то, что ты сам вставил. <b>Коннектор — это дверь из аквариума в твой реальный сервис.</b> Подключил заметки — он их читает и ведёт. Подключил почту — разбирает письма. Подключил аналитику — видит цифры.</p>
+      <p>Технически это <b>MCP (Model Context Protocol)</b> — единый «разъём» между Claude и сервисами. Как USB-C для техники: раньше под каждый сервис нужен был свой костыль, теперь один стандарт под всё. Один раз подключил — Claude умеет и читать, и действовать.</p>
+    </div>
+
+    <div class="iface rv">
+      <div class="frame flat">
+        <div class="frame-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="frame-url">подключение коннектора</span><span class="live">MCP</span></div>
+        <div class="term">
+          <div class="c"># способ 1 — одной строкой в терминале:</div>
+          <div class="u">› claude mcp add obsidian -- npx -y obsidian-mcp</div>
+          <div class="ok">✓ obsidian подключён · доступ: чтение+запись</div>
+          <div class="c" style="margin-top:8px"># способ 2 — веб-сервис по ссылке:</div>
+          <div class="u">› claude mcp add --transport http --scope user \</div>
+          <div class="u">&nbsp;&nbsp;analytics https://…/mcp</div>
+          <div class="ok">✓ готово · проверка: /mcp</div>
+        </div>
+      </div>
+      <div class="notes">
+        <div class="inote"><span class="ic"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.2 4.2l4.3 4.3M15.5 15.5l4.3 4.3M1 12h6M17 12h6M4.2 19.8l4.3-4.3M15.5 8.5l4.3-4.3"/></svg></span><div><b>1. Открой «Connectors»</b><span>В приложении — Настройки → Connectors. В терминале — команда <code>/mcp</code>. Видишь всё, что подключено.</span></div></div>
+        <div class="inote"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><div><b>2. Добавь коннектор</b><span>Кнопкой из списка или строкой <code>claude mcp add …</code>. Названия готовых коннекторов берёшь с их страницы.</span></div></div>
+        <div class="inote"><span class="ic"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><div><b>3. Дай доступ (scope)</b><span><b>user</b> — во всех проектах (напр. заметки), <b>project</b> — только в этой папке. Правило: давай ровно столько, сколько нужно.</span></div></div>
+        <div class="inote"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg></span><div><b>4. Готово</b><span>Claude уже видит сервис и работает с твоими данными. Проверка — <code>/mcp</code> покажет активные.</span></div></div>
+      </div>
+    </div>
+
+    <div class="head rv" style="margin:60px auto 30px"><h3 style="font-size:clamp(22px,3.5vw,32px)">Что реально можно <span class="grad">подключить</span></h3></div>
+    <div class="bento rv">
+      <div class="b"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div><h4>Заметки и база</h4><p>Читает и ведёт твою базу знаний, пишет отчёты, ищет по заметкам.</p><div class="tags"><code>Obsidian</code><code>Notion</code></div></div>
+      <div class="b"><div class="ic"><svg class="i" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg></div><h4>Почта и календарь</h4><p>Разбирает письма, готовит ответы, планирует встречи и напоминания.</p><div class="tags"><code>Gmail</code><code>Calendar</code></div></div>
+      <div class="b"><div class="ic"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg></div><h4>Браузер</h4><p>Заходит на сайты, собирает данные, снимает референсы, проверяет результат.</p><div class="tags"><code>Playwright</code></div></div>
+      <div class="b"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div><h4>Свежая дока</h4><p>Тянет актуальную документацию сервиса ПЕРЕД работой — меньше устаревших ответов.</p><div class="tags"><code>context7</code></div></div>
+      <div class="b"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></div><h4>Дизайн</h4><p>Работает с макетами и графикой — забирает данные из макета, готовит ассеты.</p><div class="tags"><code>Figma</code><code>Photopea</code></div></div>
+      <div class="b"><div class="ic"><svg class="i" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div><h4>Медиа-генерация</h4><p>Генерирует картинки и видео под контент прямо из сессии.</p><div class="tags"><code>higgsfield</code></div></div>
+      <div class="b"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg></div><h4>Аналитика</h4><p>Метрики соцсетей прямо в чате: охваты, аудитория, топ-посты. У меня — свой коннектор (только чтение).</p><div class="tags"><code>read-only</code></div></div>
+      <div class="b"><div class="ic pulse"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v4M12 11 5.5 17M12 11l6.5 6"/></svg></div><h4>Рой агентов</h4><p>Оркестрация команды ИИ-агентов под большие задачи. Разбор — ниже.</p><div class="tags"><code>claude-flow</code></div></div>
+      <div class="b"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v6l4 2"/></svg></div><h4>Чтение vs запись</h4><p>Бывают коннекторы «смотреть» (безопаснее) и «менять». Для аналитики хватает чтения — не давай запись без нужды.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="wrap">
+    <div class="head rv"><span class="eyebrow">Скилы · навыки</span><h2>Готовые навыки <span class="grad">под задачу</span></h2><p class="sub">Коннектор даёт доступ к сервису. Скил — даёт метод: как делать дизайн, тесты, безопасность на уровне.</p></div>
+
+    <div class="iface rv">
+      <div class="notes">
+        <div class="inote"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/></svg></span><div><b>Что такое скил</b><span>Папка с файлом <code>SKILL.md</code> — готовая инструкция-навык. Claude сам берёт нужный, когда задача подходит.</span></div></div>
+        <div class="inote"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg></span><div><b>Как поставить</b><span>Положи папку скила в <code>~/.claude/skills/</code>. Claude подхватит сам. Наборы скилов приходят плагинами.</span></div></div>
+        <div class="inote"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><div><b>Где брать</b><span>Встроенные от Anthropic — надёжная база. С GitHub и по рекомендациям — под узкие задачи. Но только с проверкой ↓</span></div></div>
+      </div>
+      <div class="frame flat">
+        <div class="frame-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="frame-url">~/.claude/skills</span></div>
+        <div class="term">
+          <div class="c"># структура скила</div>
+          <div class="p">~/.claude/skills/</div>
+          <div class="p">&nbsp;&nbsp;my-design/</div>
+          <div class="u">&nbsp;&nbsp;&nbsp;&nbsp;SKILL.md   <span class="c"># сам навык</span></div>
+          <div class="p">&nbsp;&nbsp;test-master/</div>
+          <div class="p">&nbsp;&nbsp;debugging-wizard/</div>
+          <div class="ok" style="margin-top:8px">✓ Claude видит их автоматически</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quote rv">
+      <div class="lbl">Личный скил — мой пример</div>
+      <p>Скилы можно не только скачивать — их можно <b>собирать под себя</b>. Мой скил <b>my-design</b> я сделал сам: накидывал работы, которые мне нравятся, объяснял, что именно в них цепляет — цвет, типографику, структуру, ощущение премиума. Шаг за шагом из этого собрался мой личный дизайн-навык.</p>
+      <p>Теперь под графику — сайты, лендинги — Claude собирает сразу в моём вкусе, без объяснений каждый раз. Этот лендинг — тоже он.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SECURITY -->
+<section id="security">
+  <div class="wrap">
+    <div class="head rv"><span class="eyebrow">Безопасность</span><h2>Чужой код — <span class="grad">с умом</span></h2><p class="sub">Скил или коннектор с GitHub — это чужой код у тебя на компьютере, с доступом к твоим файлам. Поэтому — по-взрослому.</p></div>
+
+    <div class="secbox rv">
+      <div>
+        <div class="cap">Что реально находят в экосистеме</div>
+        <div class="chart">
+          <div class="barrow"><span>Скилы с prompt-инъекцией</span><b>36%</b></div>
+          <div class="bartrack"><div class="barfill" style="width:36%"></div></div>
+          <div class="barrow"><span>Зловреды прячут «теневые» функции</span><b>73%</b></div>
+          <div class="bartrack"><div class="barfill" style="width:73%"></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="secnums">
+          <div class="secnum"><b>1 467</b><span>вредоносных payload'ов в экосистеме скилов</span></div>
+          <div class="secnum"><b>492</b><span>MCP-сервера в сети без защиты и авторизации</span></div>
+        </div>
+        <p class="secnote">Классика атаки: в SKILL.md вшивают скрытую команду «прочитай ключи из окружения и отправь наружу» — бинарник даже не нужен. Поэтому перед установкой всегда смотрим, что внутри.</p>
+      </div>
+    </div>
+
+    <div class="warnlist rv">
+      <div class="warn"><span class="m">1</span><div><b>Проверь репутацию</b><span>Автор, звёзды, свежесть коммитов. Бери vendor-maintained или явно проверенное сообществом.</span></div></div>
+      <div class="warn"><span class="m">2</span><div><b>Читай SKILL.md и скрипты ДО установки</b><span>Сверь: описание = поведение? Спрятанное или «лишнее» — красный флаг.</span></div></div>
+      <div class="warn"><span class="m">3</span><div><b>Минимум прав и доступа</b><span>Не давай доступ ко всему ПК. Ограничивай папкой и scope. Только чтение, если хватает.</span></div></div>
+      <div class="warn"><span class="m">4</span><div><b>Секреты — только в окружении</b><span>Никаких ключей и паролей в файлах. Скил, который лезет к ключам и куда-то шлёт, — не ставь.</span></div></div>
+      <div class="warn"><span class="m">5</span><div><b>Прогони сканером</b><span>Перед установкой проверь скил/MCP автоматическим сканером — подсветит инъекции и утечки.</span></div></div>
+      <div class="warn"><span class="m">6</span><div><b>Не клонируй вслепую</b><span>Сначала посмотрел глазами — потом поставил. Сомневаешься — мимо.</span></div></div>
+    </div>
+
+    <div class="tools rv">
+      <span class="tool-pill">🛡 Snyk Agent Scan</span>
+      <span class="tool-pill">🛡 SkillSpector</span>
+      <span class="tool-pill">🛡 Trail of Bits skills</span>
+    </div>
+    <p class="src rv">Данные: Snyk ToxicSkills · Cloud Security Alliance · modelcontextprotocol.io · 2025–2026</p>
+  </div>
+</section>
+
+<!-- MY ARSENAL -->
+<section id="arsenal">
+  <div class="wrap">
+    <div class="head rv"><span class="eyebrow">Мой арсенал</span><h2>Что подключено <span class="grad">под задачи</span></h2><p class="sub">Не «смотри сколько у меня». Принцип: под каждую задачу — свой инструмент. Собери свой набор.</p></div>
+
+    <div class="ctable rv" style="margin-bottom:40px">
+      <div class="cr ch"><div>Коннектор</div><div>Под задачу</div><div>Чем помогает</div></div>
+      <div class="cr"><div class="k"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Obsidian + Notion</div><div class="t">база знаний, отчёты</div><div class="d">ведёт заметки и дневные отчёты, помнит контекст проектов</div></div>
+      <div class="cr"><div class="k"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>context7</div><div class="t">свежая дока</div><div class="d">тянет актуальную документацию API до того, как писать код</div></div>
+      <div class="cr"><div class="k"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/></svg>Браузер (Playwright)</div><div class="t">ресёрч, проверка</div><div class="d">заходит на сайты, снимает референсы, проверяет результат</div></div>
+      <div class="cr"><div class="k"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/></svg>Свой коннектор аналитики</div><div class="t">метрики соцсетей</div><div class="d">охваты, аудитория, топ-посты прямо в чате (только чтение)</div></div>
+      <div class="cr"><div class="k"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>higgsfield</div><div class="t">медиа</div><div class="d">генерация картинок и видео под контент</div></div>
+      <div class="cr"><div class="k"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v4M12 11 5.5 17M12 11l6.5 6"/></svg>claude-flow (RuFlo)</div><div class="t">рой агентов</div><div class="d">оркестрация команды ИИ-агентов под большие задачи</div></div>
+    </div>
+
+    <div class="head rv" style="margin:0 auto 30px"><h3 style="font-size:clamp(22px,3.5vw,32px)">Скилы — <span class="grad">по направлениям</span></h3></div>
+    <div class="bento rv">
+      <div class="b"><div class="ic"><svg class="i" viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 2a10 10 0 0 0 0 20 3 3 0 0 0 0-6 2 2 0 0 1 0-4 4 4 0 0 0 4-4 6 6 0 0 0-4-6z"/></svg></div><h4>Дизайн и визуал</h4><p>Сайты, лендинги, анимации — в моём стиле.</p><div class="tags"><code>my-design</code><code>hallmark</code><code>brand-landingpage</code><code>gsap-*</code><code>responsive</code></div></div>
+      <div class="b"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></svg></div><h4>AI, агенты, промты</h4><p>Промты, оценка, RAG, оркестрация.</p><div class="tags"><code>prompt-engineer</code><code>reflexion-critique</code><code>rag-implementation</code><code>llm-evaluation</code><code>workflow-patterns</code></div></div>
+      <div class="b"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="m18 16 4-4-4-4M6 8l-4 4 4 4M14.5 4l-5 16"/></svg></div><h4>Разработка</h4><p>Код, тесты, отладка, деплой.</p><div class="tags"><code>python-pro</code><code>test-master</code><code>debugging-wizard</code><code>devops-engineer</code><code>sre-engineer</code></div></div>
+      <div class="b"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div><h4>Безопасность</h4><p>Секреты, аудит кода, защита от инъекций.</p><div class="tags"><code>gitleaks</code><code>sast</code><code>stride</code><code>llm-guardrails</code><code>prompt-injection</code></div></div>
+      <div class="b"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/></svg></div><h4>Бизнес и контент</h4><p>Контент, аналитика, стратегия.</p><div class="tags"><code>social-publishing</code><code>data-storytelling</code><code>kpi-dashboard</code><code>competitive-landscape</code></div></div>
+      <div class="b"><div class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg></div><h4>Принцип</h4><p>Не ставлю всё подряд. Беру скилы под свои направления — и Claude берёт нужный под задачу автоматически.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- RUFLO / AGENTS -->
+<section id="agents">
+  <div class="wrap">
+    <div class="head rv"><span class="eyebrow">Рой агентов · RuFlo</span><h2>Не один ИИ — <span class="grad">команда</span></h2><p class="sub">Когда задача большая (сайт + бот + аналитика), один агент делает по очереди. Рой — делает параллельно.</p></div>
+    <div class="iface rv">
+      <div class="notes">
+        <div class="inote"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M21 12a9 9 0 1 1-6.2-8.5"/></svg></span><div><b>Как работает</b><span>Ставишь большую цель — рой сам делит её на части: один планирует, другие пишут, проверяют, тестируют. У них общая память — не теряют контекст.</span></div></div>
+        <div class="inote"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><div><b>Роли в команде</b><span>Планировщик · Кодер · Ревьюер · Тестировщик · Безопасник. Как настоящая команда — каждый за своё.</span></div></div>
+        <div class="inote"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M12 2v6M12 22v-2M6 12H2M22 12h-4"/><circle cx="12" cy="12" r="4"/></svg></span><div><b>Как работать правильно</b><span>Суб-агенту всегда давай три вещи: <b>роль + цель + границы</b> (что можно, что нельзя). Начни с 1–2 агентов, не с «армии».</span></div></div>
+      </div>
+      <div class="frame flat">
+        <div class="frame-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="frame-url">рой агентов</span><span class="live">RuFlo</span></div>
+        <div class="term">
+          <div class="c"># подключение</div>
+          <div class="u">› claude mcp add claude-flow -- npx -y @claude-flow/cli@latest</div>
+          <div class="ok">✓ рой готов</div>
+          <div class="c" style="margin-top:8px"># большая задача → команда параллельно:</div>
+          <div class="p">├ планировщик — разбил на 4 части</div>
+          <div class="p">├ кодер ×2 — пишут блоки</div>
+          <div class="p">├ ревьюер — проверяет</div>
+          <div class="ok">└ ✓ собрано за один проход</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE -->
+<section id="session">
+  <div class="wrap show">
+    <div class="show-left rv">
+      <span class="eyebrow">Подключение вживую</span>
+      <h2>Коннектор<br>по шагам</h2>
+      <p class="sub" style="margin-top:16px">Слева шаг, справа что происходит на экране.</p>
+      <div class="show-list">
+        <div class="show-item on" data-i="0"><div class="si-t">01 · Открыл Connectors</div><div class="si-d">Вижу, что подключено.</div></div>
+        <div class="show-item" data-i="1"><div class="si-t">02 · Добавил коннектор</div><div class="si-d">Одной строкой claude mcp add.</div></div>
+        <div class="show-item" data-i="2"><div class="si-t">03 · Дал доступ</div><div class="si-d">Минимум прав — только чтение.</div></div>
+        <div class="show-item" data-i="3"><div class="si-t">04 · Работает</div><div class="si-d">Claude видит сервис и данные.</div></div>
+      </div>
+    </div>
+    <div class="show-right">
+      <div class="frame flat rv"><div class="frame-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="frame-url">/mcp</span></div><div class="term"><div class="u">› /mcp</div><div class="c"># активные: obsidian, context7</div></div></div>
+      <div class="frame flat rv"><div class="frame-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="frame-url">add</span></div><div class="term"><div class="u">› claude mcp add gmail …</div><div class="c"># подключаю…</div></div></div>
+      <div class="frame flat rv"><div class="frame-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="frame-url">доступ</span></div><div class="term"><div class="c"># scope: user · только чтение</div><div class="ok">✓ права выданы по минимуму</div></div></div>
+      <div class="frame flat rv"><div class="frame-bar"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="frame-url">готово</span></div><div class="term"><div class="u">› разбери письма за сегодня</div><div class="ok">✓ 12 писем · 3 важных, черновики готовы</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- GIVE / READY -->
+<section>
+  <div class="wrap">
+    <div class="head rv"><span class="eyebrow">Забирай готовое</span><h2>Копируй и <span class="grad">применяй</span></h2></div>
+    <div class="give tri rv">
+      <div class="col">
+        <h4><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span>Подключить коннектор</h4>
+        <div class="codebox"><button class="copy">Копировать</button>claude mcp add &lt;имя&gt; \
+  -- npx -y &lt;пакет&gt;
+
+/mcp   # проверить, что появился</div>
+      </div>
+      <div class="col">
+        <h4><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>Чек перед установкой</h4>
+        <div class="codebox"><button class="copy">Копировать</button>[ ] автор / звёзды / свежие коммиты
+[ ] прочитал SKILL.md и скрипты
+[ ] описание = поведение
+[ ] лишних прав не просит
+[ ] секретов в файлах нет
+[ ] прогнал сканером</div>
+      </div>
+      <div class="col">
+        <h4><span class="ic"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>Промт-аудит арсенала</h4>
+        <div class="codebox"><button class="copy">Копировать</button>Посмотри мой сетап (коннекторы,
+скилы, память).
+Под задачу &lt;___&gt; предложи,
+чем усилиться.
+Для каждого: что даёт, риски,
+как проверить перед установкой.
+Ничего не ставь — сначала список.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROMPTS -->
+<section id="prompts">
+  <div class="wrap">
+    <div class="head rv"><span class="eyebrow">Промты Части 2</span><h2>Управляй <span class="grad">арсеналом</span></h2><p class="sub">Три новых промта под коннекторы и агентов. Нажми «Показать» → скопируй → вставь в сессию.</p></div>
+    <div class="prm rv">
+
+      <div class="pcard">
+        <div class="ph"><div><span class="tag">Коннекторы</span><h4>Подключи и проверь</h4></div>
+          <button class="toggle"><span>Показать промт</span><svg class="i" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button></div>
+        <p class="meta"><b>Когда:</b> добавляешь новый коннектор. <b>Зачем:</b> убедиться, что он видит нужное и ничего не ломает.</p>
+        <div class="pbody"><div class="pbody-in"><div class="codebox"><button class="copy">Копировать</button>Подключи коннектор &lt;имя&gt; с минимальными правами (лучше только чтение).
+Покажи, что именно он теперь видит.
+Сделай один безопасный тестовый запрос и покажи результат.
+Мои данные не меняй — только чтение, пока я не подтвержу.
+Если что-то просит лишний доступ — остановись и скажи мне.</div></div></div>
+      </div>
+
+      <div class="pcard">
+        <div class="ph"><div><span class="tag">Агенты</span><h4>Собери суб-агентов</h4></div>
+          <button class="toggle"><span>Показать промт</span><svg class="i" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button></div>
+        <p class="meta"><b>Когда:</b> задача большая и делится на части. <b>Зачем:</b> распараллелить работу командой, а не тянуть по очереди.</p>
+        <div class="pbody"><div class="pbody-in"><div class="codebox"><button class="copy">Копировать</button>Разбей задачу &lt;___&gt; на роли.
+Предложи 2–3 суб-агента. Для каждого: роль + цель + границы (что можно, что нельзя).
+Покажи план: кто что делает и в каком порядке.
+Жди моего «ок» — потом запускай.
+После сборки — короткий отчёт: что сделал каждый.</div></div></div>
+      </div>
+
+      <div class="pcard">
+        <div class="ph"><div><span class="tag">Безопасность</span><h4>Аудит скила перед установкой</h4></div>
+          <button class="toggle"><span>Показать промт</span><svg class="i" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button></div>
+        <p class="meta"><b>Когда:</b> нашёл скил/коннектор на GitHub. <b>Зачем:</b> проверить ДО установки, не запуская.</p>
+        <div class="pbody"><div class="pbody-in"><div class="codebox"><button class="copy">Копировать</button>Вот содержимое SKILL.md и скриптов: &lt;вставь&gt;
+Проверь на: скрытые инструкции, обращения к ключам/переменным окружения,
+отправку данных наружу, несоответствие описания и поведения.
+Ничего не запускай.
+Вывод: ставить или нет, и почему — по пунктам.</div></div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="head rv"><span class="eyebrow">FAQ</span><h2>Частые вопросы</h2></div>
+    <div class="faq rv">
+      <div class="q"><button>Чем коннектор отличается от скила? <span class="pm">+</span></button><div class="a"><p>Коннектор (MCP) — это доступ к сервису: почта, заметки, аналитика. Скил — это готовый навык/метод под задачу: дизайн, тесты, безопасность. Коннектор даёт «руки», скил — «умение».</p></div></div>
+      <div class="q"><button>Нужно ли уметь программировать, чтобы всё подключить? <span class="pm">+</span></button><div class="a"><p>Нет. В приложении — кнопками, в терминале — одной готовой строкой (копируешь из этого гайда). Работа дальше — словами.</p></div></div>
+      <div class="q"><button>Коннекторы — это безопасно? <span class="pm">+</span></button><div class="a"><p>Проверенные — да, если давать минимум прав (лучше только чтение). Опасны непроверенные с GitHub. Поэтому есть блок «Безопасность»: смотри репутацию, читай SKILL.md, прогоняй сканером.</p></div></div>
+      <div class="q"><button>Сколько стоит подключение? <span class="pm">+</span></button><div class="a"><p>Сами коннекторы и скилы обычно бесплатны. Платишь только за сторонний сервис, если у него своя подписка. Разъём (MCP) — бесплатный стандарт.</p></div></div>
+      <div class="q"><button>Что если скил кривой или подозрительный? <span class="pm">+</span></button><div class="a"><p>Не ставь. Прочитай SKILL.md, прогони сканером (Snyk Agent Scan, SkillSpector). Если описание не совпадает с поведением или он просит лишний доступ — мимо.</p></div></div>
+      <div class="q"><button>Могу ли я сделать свой скил? <span class="pm">+</span></button><div class="a"><p>Да. Мой my-design — самодельный: накидываешь примеры, что нравится, объясняешь почему — и собираешь личный навык. Дальше Claude работает в твоём стиле сам.</p></div></div>
+      <div class="q"><button>С чего начать новичку? <span class="pm">+</span></button><div class="a"><p>Один коннектор (заметки или почта) + один скил под свою задачу. Разберёшься — добавляй по одному под реальные нужды.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<section class="foot">
+  <div class="beams"></div>
+  <div class="wrap">
+    <span class="thanks">🙌 Рад, что ты с нами</span>
+    <h2 class="rv">Подключи первый коннектор —<br>и Claude выйдет <span class="grad">за пределы чата</span></h2>
+    <p class="sub rv">Начни с малого: один коннектор, один скил, проверка на безопасность. Возвращайся к гайду в любой момент.</p>
+    <div class="rv" style="margin-top:30px"><a class="btn btn-primary" href="#connectors">↑ Начать с коннекторов</a></div>
+    <div class="footer-bar">
+      <div class="brand"><img src="avatar.jpg" alt="" style="width:26px;height:26px;border-radius:7px"> Claude Кодыч</div>
+      <div class="links"><a href="#connectors">Коннекторы</a><a href="#skills">Скилы</a><a href="#security">Безопасность</a><a href="#arsenal">Арсенал</a><a href="#faq">FAQ</a></div>
+      <div>© 2026 Claude Кодыч · building in public</div>
+    </div>
+  </div>
+</section>
+
+<script>
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+document.querySelectorAll('.q button').forEach(b=>b.addEventListener('click',()=>{
+  const q=b.parentElement,a=q.querySelector('.a'),open=q.classList.contains('open');
+  document.querySelectorAll('.q').forEach(x=>{x.classList.remove('open');x.querySelector('.a').style.maxHeight=null;x.querySelector('.pm').textContent='+'});
+  if(!open){q.classList.add('open');a.style.maxHeight=a.scrollHeight+'px';q.querySelector('.pm').textContent='−'}
+}));
+
+document.querySelectorAll('.toggle').forEach(t=>t.addEventListener('click',()=>{
+  const body=t.closest('.pcard').querySelector('.pbody'),open=t.classList.contains('open');
+  t.classList.toggle('open');t.querySelector('span').textContent=open?'Показать промт':'Свернуть';
+  body.style.maxHeight=open?null:body.scrollHeight+24+'px';
+}));
+
+document.querySelectorAll('.copy').forEach(c=>c.addEventListener('click',()=>{
+  const box=c.parentElement,txt=box.innerText.replace(/^\s*Копировать\s*/,'').trim();
+  navigator.clipboard.writeText(txt).then(()=>{c.textContent='Скопировано ✓';c.classList.add('done');setTimeout(()=>{c.textContent='Копировать';c.classList.remove('done')},1800)});
+}));
+
+const items=[...document.querySelectorAll('.show-item')],frames=[...document.querySelectorAll('.show-right .frame')];
+const so=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){const i=frames.indexOf(e.target);items.forEach(t=>t.classList.toggle('on',+t.dataset.i===i))}})},{threshold:.55});
+frames.forEach(f=>so.observe(f));
+
+(function(){
+  const c=document.querySelector('.net'); if(!c) return;
+  const ctx=c.getContext('2d'), hero=c.parentElement;
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  let w,h,dpr,nodes,raf;
+  function size(){dpr=Math.min(window.devicePixelRatio||1,2);w=hero.clientWidth;h=hero.clientHeight;c.width=w*dpr;c.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);init();}
+  function init(){const n=Math.round(Math.min(64,w/24));nodes=[];for(let i=0;i<n;i++)nodes.push({x:Math.random()*w,y:Math.random()*h*0.72,vx:(Math.random()-.5)*0.2,vy:(Math.random()-.5)*0.2});}
+  function frame(){
+    ctx.clearRect(0,0,w,h);
+    for(const p of nodes){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h*0.8)p.vy*=-1;}
+    for(let i=0;i<nodes.length;i++){const a=nodes[i],fade=Math.max(0,1-a.y/(h*0.85));
+      for(let j=i+1;j<nodes.length;j++){const b=nodes[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+        if(d<132){const al=(1-d/132)*0.5*fade;if(al>0.012){ctx.strokeStyle='rgba(255,160,60,'+al+')';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}}}
+      ctx.fillStyle='rgba(255,184,92,'+(0.6*fade)+')';ctx.beginPath();ctx.arc(a.x,a.y,1.6,0,7);ctx.fill();}
+    if(!reduce)raf=requestAnimationFrame(frame);
+  }
+  size();window.addEventListener('resize',()=>{cancelAnimationFrame(raf);size();frame();});
+  frame();
+})();
+</script>
+</body>
+</html>
