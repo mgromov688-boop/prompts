@@ -1,0 +1,19 @@
+{
+ "about": "Знаки сервисов для гайда courses и живой обложки. mono — однотонный файл (заливку задаёт сцена), color — цветной исходник, hex — фирменный цвет. Источники: SOURCES.md.",
+ "logos": {
+  "anthropic": {"title": "Anthropic", "mono": "anthropic.svg", "hex": "#191919", "kind": "company"},
+  "claude": {"title": "Claude", "mono": "claude.svg", "hex": "#D97757", "kind": "ai"},
+  "openai": {"title": "OpenAI", "mono": "openai.svg", "hex": "#000000", "kind": "company"},
+  "google": {"title": "Google", "mono": "google.svg", "color": "google_color.svg", "hex": "#4285F4", "kind": "company", "note": "на обложке брать цветной G"},
+  "gemini": {"title": "Google Gemini", "mono": "googlegemini.svg", "hex": "#8E75B2", "kind": "ai"},
+  "n8n": {"title": "n8n", "mono": "n8n.svg", "hex": "#EA4B71", "kind": "tool"},
+  "huggingface": {"title": "Hugging Face", "mono": "huggingface.svg", "hex": "#FFD21E", "kind": "platform"},
+  "kaggle": {"title": "Kaggle", "mono": "kaggle.svg", "hex": "#20BEFF", "kind": "platform"},
+  "nvidia": {"title": "NVIDIA", "mono": "nvidia.svg", "hex": "#76B900", "kind": "company"},
+  "coursera": {"title": "Coursera", "mono": "coursera.svg", "hex": "#0056D2", "kind": "platform"},
+  "stepik": {"title": "Stepik", "mono": "stepik.svg", "color": "stepik_original.svg", "hex": "#222222", "kind": "platform"},
+  "elementsofai": {"title": "Elements of AI", "mono": "elementsofai.svg", "color": "elementsofai_original.svg", "hex": "#4844A3", "kind": "platform"},
+  "deeplearningai": {"title": "DeepLearning.AI", "color": "deeplearningai_original.png", "hex": null, "kind": "platform", "mark_box_px": [24, 134, 348, 458], "note": "PNG знак+надпись; знак — квадрат mark_box_px"}
+ },
+ "cover_set": ["anthropic", "openai", "google", "n8n"]
+}
