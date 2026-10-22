@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Промпт: промо-ролик в Claude Code за один запуск</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; background: #0f0f10; color: #e9e6df; font: 17px/1.55 -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 40px 20px 60px; }
+  h1 { font-size: 26px; line-height: 1.25; margin: 0 0 24px; }
+  .box { position: relative; background: #18181a; border: 1px solid #2a2a2d; border-radius: 12px; }
+  pre { margin: 0; padding: 56px 18px 18px; white-space: pre-wrap; word-wrap: break-word;
+        font: 14.5px/1.6 ui-monospace, "Cascadia Code", Consolas, monospace; color: #e9e6df; }
+  button { position: absolute; top: 10px; right: 10px; background: #c9895a; color: #111; border: 0; border-radius: 8px;
+           padding: 8px 14px; font: 600 14px/1 inherit; cursor: pointer; }
+  button.ok { background: #7fb38a; }
+  .need { margin: 28px 0 0; color: #bdb8ae; }
+  .need p { margin: 4px 0; }
+  a { color: #d9a77c; }
+</style>
+</head>
+<body>
+<main>
+<h1>Промпт: промо-ролик в Claude Code за один запуск</h1>
+<div class="box">
+<button id="copy" type="button">Скопировать</button>
+<pre id="prompt">Собери вертикальный промо-ролик 1080×1920, 45 секунд, без голоса. Рассказывает только графика и интерфейс.
+Идея: Claude Code из одной строки промпта собирает ролик, и зритель видит каждый этап: скиллы, музыка, раскадровка, 3D и свет, моушн-графика, озвучка, монтаж, проверки, рендер, готовый ролик в телефоне.
+Кадр 0: тёмный экран, знак Claude летит на камеру, в терминале печатается строка промпта, Enter рассыпает её в свет.
+Наверху весь ролик живёт HUD: «Claude Code», номер этапа 01/10, шкала прогресса, таймкод.
+Интерфейс премиальный: стекло с глубиной и бликом по кромке, сетка 8 px, одни радиусы, иконки одного набора, моно-шрифт для данных, бегущий свет по окнам на ударах. Только настоящие имена: скиллы, инструменты, файлы.
+Между этапами нет склеек: объект одного этапа превращается в объект следующего, окна живут в 3D и двигаются с параллаксом.
+Музыка ведёт монтаж: сначала размечаешь доли и такты трека (BPM, дроп), потом ставишь на них смены этапов, клики, вспышки и толчки камеры. На каждой доле в кадре что-то меняется, на каждом такте меняется ракурс. Дроп = самое эффектное событие.
+Звук: трек плюс мягкие эффекты на каждое событие, без повторов файлов, громкость −14 LUFS.
+Финал: всё схлопывается обратно в строку промпта, строка становится карточкой канала.
+Перед сдачей проверь кодом энергию хука, частоту склеек, синхрон с битом (±1 кадр) и каждый кадр глазами.</pre>
+</div>
+<div class="need">
+<p>Что нужно: Claude Code, Remotion, ffmpeg</p>
+<p>Вставь промпт в Claude Code в пустой папке проекта</p>
+<p>Канал: <a href="https://t.me/aureus_ai_hub">https://t.me/aureus_ai_hub</a></p>
+</div>
+</main>
+<script>
+document.getElementById('copy').addEventListener('click', function () {
+  var b = this, t = document.getElementById('prompt').innerText;
+  var done = function () { b.textContent = 'Скопировано'; b.className = 'ok';
+    setTimeout(function () { b.textContent = 'Скопировать'; b.className = ''; }, 1800); };
+  if (navigator.clipboard) { navigator.clipboard.writeText(t).then(done, function () { fallback(t); done(); }); }
+  else { fallback(t); done(); }
+});
+function fallback(t) { var a = document.createElement('textarea'); a.value = t; document.body.appendChild(a);
+  a.select(); document.execCommand('copy'); a.remove(); }
+</script>
+</body>
+</html>
